@@ -52,7 +52,17 @@ public class XlsxWriter {
 	 * @param data 表格数据，此为从docx解析出来的表格对象
 	 */
 	static void writeSheetWithTable(SXSSFWorkbook wb, String name, XWPFTable data){
-		SXSSFSheet sheet = (SXSSFSheet) wb.createSheet(name);
+		SXSSFSheet sheet=null;
+		try {
+			sheet = (SXSSFSheet) wb.createSheet(name);
+			
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			System.out.println("~~ "+name+"表Sheet页已存在!");
+			e.printStackTrace();
+			// 该sheet已经存在，忽略错误
+			return ;
+		}
 
 		int rowIndex = 0;
 		 for (XWPFTableRow dataRow : data.getRows()){

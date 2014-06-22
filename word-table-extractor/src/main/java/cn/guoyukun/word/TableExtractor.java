@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
@@ -31,7 +34,15 @@ public class TableExtractor {
 	static Stack<String> title = new Stack<String>();
 	// 表名的中英文对照
 	static Map<String,String> tableNames = new HashMap<String,String>();
+	// 变态的字典表表名模式
+	static final Pattern PATTERN = Pattern.compile("(.*)（?((CV|GBT|GB)\\d+)）?");
+	
+	static final Map<String,String> NOT_MATCH = new HashMap<String,String>();
+	// 读取的文件栈
+	static Stack<String> FILES = new Stack<String>();
 
+	static int tableNumber=0;
+	
 	public static void main(String[] args) throws XmlException,
 			OpenXML4JException, IOException {
 		//从配置文件加载表名中英文对照
@@ -44,12 +55,28 @@ public class TableExtractor {
 		} else {
 			docxTable(path);
 		}
+		
 		// 移除表清单
-		tables.remove("表清单");
+		// tables.remove("表清单");
 		// 写入excel
-		XlsxWriter.writeSheetsWithTables("/Volumes/File/wordtable/outlining_collapsed.xlsx",tables);
-	}
+		XlsxWriter.writeSheetsWithTables("/Volumes/File/wordtable/tables.xlsx",tables);
 
+		
+		System.out.println("\n==== 共["+tableNumber+"]张表 ====");
+		
+		
+		System.out.println("\n ==== 生成的Sheet页("+tables.size()+") ====");
+		for(String code: tables.keySet()){
+			System.out.println(code);
+		}
+		
+		
+		System.out.println("\n ==== 没有对应上的表("+NOT_MATCH.size()+") ====");
+		for(Entry<String,String> map: NOT_MATCH.entrySet()){
+			System.out.println(map.getKey()+" >> IN >> "+map.getValue());
+		}
+	}
+	
 	/**
 	 * 解析文件夹里的所有的docx文档里的表格，放入tables变量内
 	 * 
@@ -79,6 +106,7 @@ public class TableExtractor {
 	static void docxTable(String docxFile) throws IOException {
 		System.out.println("\n================================");
 		System.out.println(docxFile);
+		FILES.push(docxFile);
 		FileInputStream in = new FileInputStream(docxFile);
 		XWPFDocument hwpf = new XWPFDocument(in);
 		StringBuffer text = new StringBuffer();
@@ -111,9 +139,11 @@ public class TableExtractor {
 	 * @param table
 	 */
 	static void appendTableText(StringBuffer text, XWPFTable table) {
+		tableNumber++;
 		// 取栈顶的Paragraph作为表名，去除章节标号( 型如:1.2.7)
 		String tableName = title.pop().replaceFirst("\\d[\\\\.\\d]*", "");
 
+		tableName = tableName.replaceFirst("表 ","");
 		// 表格内容输入到text，（调试用）
 		text.append("\n@@@@@@@@@@@@@@@@@@@@@@").append(tableName)
 				.append("@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
@@ -129,22 +159,83 @@ public class TableExtractor {
 			text.append('\n');
 		}
 		text.append("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-
+		
+		tableName = tableName.trim();
 		// 如果表标题是表清单，从里面加载表名中英文对照
-		if (tableName.equals("表清单")) {
-			tableNames.putAll(loadTableNames(table));
+		if (tableName.endsWith("清单")) {
+			if(tableName.contains("字典表")){
+				System.out.println("## 加载字典表清单:"+tableName);
+				tableNames.putAll(loadTableNames(table,0,1));
+			}else{
+				System.out.println("## 加载表清单:"+tableName);
+				tableNames.putAll(loadTableNames(table,2,0));	
+			}
+		}else{
+			// 取表的英文名
+			String tableNameCode = findTableNameCode(tableName);
+			
+			if(!Pattern.matches("[a-zA-Z0-9_]*", tableNameCode)){
+				NOT_MATCH.put(tableNameCode, FILES.peek());
+			}
+			
+			if(tableName.endsWith("代码表") || tableName.contains("代码表")){
+				return ;
+			}
+			
+			if(PATTERN.matcher(tableName).find()){
+				return;
+			}
+			// 将表添加到结果map容器中
+			tables.put(tableNameCode, table);
+			
 		}
-		// 取表的英文名
-		String tableNameEn = (String) tableNames.get(tableName);
-		if (tableNameEn == null) {
-			tableNameEn = tableName;
-		}
-		System.out.println(">> " + tableName + " : " + tableNameEn);
-		// 将表添加到结果map容器中
-		tables.put(tableNameEn, table);
-
 	}
 
+	
+	static String findTableNameCode(String tableName){
+		// 取表的英文名
+		String tableNameCode = (String) tableNames.get(tableName.trim());
+
+		if (tableNameCode != null){
+			System.out.println(">> " + tableName + " : " + tableNameCode);
+			return tableNameCode;
+		} 
+
+		if( ! tableName.endsWith("表")) {
+			// 没有找到对应的英文名，且中文名不是以'表'字结尾，加上'表'字再找一下		
+			tableNameCode = (String) tableNames.get(tableName+"表");
+			if(tableNameCode!=null){
+				System.out.println(">> " + tableName + "[表] : " + tableNameCode);
+				return tableNameCode;
+			}
+		}else{
+			// 没有找到对应的英文名，且中文名以'表'结尾，去掉'表'字再找一下		
+			tableNameCode = (String) tableNames.get(tableName.substring(0, tableName.length()-1));
+			if(tableNameCode!=null){
+				System.out.println(">> " + tableName + "<表> : " + tableNameCode);
+				return tableNameCode;
+			}
+		}
+		
+		Matcher matcher =  PATTERN.matcher(tableName);
+		if(matcher.find()){
+			tableNameCode = (String) tableNames.get(matcher.group(1));
+			if(tableNameCode!=null){
+				System.out.println(">> " + tableName + " : " + tableNameCode);
+				return tableNameCode;
+			}else{
+				tableNameCode = matcher.group(2);
+				System.out.println(">> (" + tableName + ") : " + tableNameCode);
+				return tableNameCode;
+			}
+		}
+		NOT_MATCH.put(tableName, FILES.peek());
+		System.out.println("%% " + tableName + " : " + tableNameCode);
+		return tableName;
+		
+		
+	}
+	
 	/**
 	 * 解析所有的Paragraph（具体代表标题还是代表标题和内容没有测试）
 	 * @param text
@@ -216,12 +307,12 @@ public class TableExtractor {
 	 * @param table
 	 * @return
 	 */
-	static Map<String,String> loadTableNames(XWPFTable table) {
+	static Map<String,String> loadTableNames(XWPFTable table, int codeIndex, int nameIndex) {
 		Map<String, String> names = new HashMap<String, String>();
 		for (XWPFTableRow row : table.getRows()) {
-			String n = row.getCell(0).getText();
-			String v = row.getCell(2).getText();
-			names.put(n, v);
+			String name = row.getCell(nameIndex).getText().trim();
+			String code = row.getCell(codeIndex).getText().trim();
+			names.put(name, code);
 		}
 		return names;
 	}
