@@ -56,4 +56,9 @@
 		<system>travis-ci</system>
 		<url>https://travis-ci.org/gyk001/word-excel-util</url>
 	</ciManagement>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 </project>
