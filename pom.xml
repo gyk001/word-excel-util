@@ -40,7 +40,7 @@
 	</dependencyManagement>
 	<packaging>pom</packaging>
 	<modules>
-		<module>word-excel-util</module>
+		<module>word-table-extractor</module>
 	</modules>
 
 	<scm>
