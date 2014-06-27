@@ -25,36 +25,35 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 public class Generator {
-
+	private int chapterIndex = 1;
+	
 	public void generator(String pdm, String pdf) throws MalformedURLException,
 			DocumentException, IOException {
 		newPdf(pdf);
 	}
 
 	private void setHeaderFooter(PdfWriter writer) throws DocumentException, IOException {
-		//HeaderFooter headerFooter = new HeaderFooter(this);
-		//更改事件，瞬间变身 第几页/共几页 模式。
-		PdfReportM1HeaderFooter headerFooter = new PdfReportM1HeaderFooter();//就是上面那个类
+		// 更改事件，瞬间变身 第几页/共几页 模式。
+		PdfReportM1HeaderFooter headerFooter = new PdfReportM1HeaderFooter();// 就是上面那个类
 		headerFooter.setHeader("中科软科技股份有限公司");
 		// 跳过封皮
 		headerFooter.setPageOffset(-1);
 		headerFooter.setPresentFontSize(10);
-		writer.setBoxSize("art",PageSize.A4);
+		writer.setBoxSize("art", PageSize.A4);
 		writer.setPageEvent(headerFooter);
-		}
+	}
 	
 	public Document newPdf(String pdf) throws DocumentException,
 			MalformedURLException, IOException {
-		// Listing 1. Instantiation of document object
+		// 横版A4
 		Document document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
-		// Listing 2. Creation of PdfWriter object
+		// 
 		PdfWriter writer = PdfWriter.getInstance(document,
 				new FileOutputStream(pdf));
 		// 页眉页脚
 		setHeaderFooter(writer);
 		writer.setFullCompression();
 		writer.setPdfVersion(PdfWriter.VERSION_1_4);
-		
 		//TODO: 设置行间距，没试出效果
 		writer.setInitialLeading(-100f);
 		document.open();
@@ -88,97 +87,110 @@ public class Generator {
 		
 		document.add(paragraph1);
 
-		
-		
 		document.add(new Paragraph("封皮！！！", Fonts.FONT_TITILE1));
 		document.add(new Paragraph("V 3.1", Fonts.FONT_FOOTER));
-		
-		
 
 	}
 
-	public void buildContent(Document document) throws MalformedURLException,
-			IOException, DocumentException {
-		// 域标题
-		Paragraph pDomainTitle = new Paragraph("医疗服务域--住院业务接口表",
-				Fonts.FONT_TITILE1);
-		pDomainTitle.setAlignment(Paragraph.ALIGN_CENTER);
-		Chapter cDomainChapter = new Chapter(pDomainTitle, 1);
-		cDomainChapter.setNumberDepth(1);
-		LineSeparator line = new LineSeparator(2f, 100, BaseColor.BLACK,
-				Element.ALIGN_CENTER, -5f);
-		pDomainTitle.add(line);
+	
+	public void buildContent(Document document) throws MalformedURLException, IOException, DocumentException{
+		buildDomainContent1(document);
+		// TODO: 测试
+		buildDomainContent1(document);
+		buildDomainContent1(document);
+	}
+	
+	/**
+	 * 构建一个业务的内容
+	 * @param cParentChapter
+	 * @throws DocumentException
+	 * @throws IOException 
+	 * @throws MalformedURLException 
+	 */
+	public void buildBiz(Section parentSection) throws DocumentException, MalformedURLException, IOException{
+		
+		// ============ 业务开始 ==============
+		// 业务标题
+		Paragraph pBiz = new Paragraph("住院业务",
+						Fonts.FONT_TITILE2);
+		// 业务章节
+		Section sBiz = parentSection.addSection(pBiz);
+		//sBiz.setTriggerNewPage(true);
 
-		// 表关系图
+		// 表关系图标题
 		Paragraph pTableImageTitle = new Paragraph("住院业务关系图",
 				Fonts.FONT_TITILE2);
-		Section spTableImage = cDomainChapter.addSection(pTableImageTitle);
-
+		// 表关系图章节
+		Section sTableImage = sBiz.addSection(pTableImageTitle);
+		// 表关系图
 		Image iTableImg = Image.getInstance(Generator.class
 				.getResource("/table_rel/biz1.png"));
+		iTableImg.setAlt("说明！！");
 		iTableImg.scaleToFit(360f, 480f);
-		spTableImage.add(iTableImg);
-
-		// 表清单
+		//iTableImg.scaleAbsolute(360f, 360f);
+		//iTableImg.setAlignment(Image.LEFT);
+		sTableImage.add(iTableImg);
+		
+		// 表清单章节
+		buildTableListSection(sBiz);
+		
+	}
+	
+	/**
+	 * 表清单章节
+	 * @param cParentChapter
+	 * @throws DocumentException
+	 */
+	public void buildTableListSection(Section parentSection) throws DocumentException{
+		// 表清单标题
 		Paragraph pTableListTitle = new Paragraph("住院业务接口表清单",
 				Fonts.FONT_TITILE2);
-		Section sTableList = cDomainChapter.addSection(pTableListTitle);
+		// 表清单章节
+		Section sTableList = parentSection.addSection(pTableListTitle);
+		// 表清单说明
 		Paragraph someSectionText = new Paragraph("门急诊业务共包括26张业务信息接口表",
 				Fonts.FONT_MAIN_TEXT);
 		someSectionText.setSpacingBefore(10);
 		someSectionText.setFirstLineIndent(30);
 		sTableList.add(someSectionText);
-
+		// 表清单表格
 		PdfPTable tTableList = buildTableList();
-		
-		sTableList.add(tTableList);
+		sTableList.add(tTableList);		
+	}
+	
+	/**
+	 * 构建业务域内容
+	 * @param document
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws DocumentException
+	 */
+	public void buildDomainContent1(Document document) throws MalformedURLException,
+			IOException, DocumentException {
+		String domainTitle = "医疗服务域";
+		// 域标题
+		Paragraph pDomainTitle = new Paragraph(domainTitle,
+				Fonts.FONT_TITILE1);
+		pDomainTitle.setAlignment(Paragraph.ALIGN_CENTER);
+		// 章节
+		Chapter cDomainChapter = new Chapter(pDomainTitle, chapterIndex++);
+		// 编号深度
+		cDomainChapter.setNumberDepth(1);
+		// 分割线
+		LineSeparator line = new LineSeparator(2f, 100, BaseColor.BLACK,
+				Element.ALIGN_CENTER, -5f);
+		pDomainTitle.add(line);
+	
+		// 构建业务内容
+		buildBiz(cDomainChapter);
+		// TODO: 测试！！
+		buildBiz(cDomainChapter);
+		buildBiz(cDomainChapter);
 
-		//
-		// // Listing 6. Creation of table object
-		// PdfPTable t = new PdfPTable(3);
-		//
-		// t.setSpacingBefore(25);
-		// t.setSpacingAfter(25);
-		// PdfPCell c1 = new PdfPCell(new Phrase("Header1"));
-		// t.addCell(c1);
-		// PdfPCell c2 = new PdfPCell(new Phrase("Header2"));
-		// t.addCell(c2);
-		// PdfPCell c3 = new PdfPCell(new Phrase("Header3"));
-		// t.addCell(c3);
-		// t.addCell("1.1");
-		// t.addCell("1.2");
-		// t.addCell("1.3");
-		// section1.add(t);
-
-		// // Listing 7. Creation of list object
-		// List l = new List(true, false, 10);
-		// l.add(new ListItem("First item of list"));
-		// l.add(new ListItem("Second item of list"));
-		// section1.add(l);
-		//
-		// // Listing 8. Adding image to the main document
-		//
-		// Image image2 = Image.getInstance(ITextTest.class
-		// .getResource("/IBMLogo.bmp"));
-		// image2.scaleAbsolute(120f, 120f);
-		// section1.add(image2);
-		//
-		// // Listing 9. Adding Anchor to the main document.
-		// Paragraph title2 = new Paragraph("Using Anchor", FontFactory.getFont(
-		// FontFactory.HELVETICA, 16, Font.BOLD, new CMYKColor(0, 255, 0,
-		// 0)));
-		// section1.add(title2);
-		//
-		// title2.setSpacingBefore(5000);
-		// Anchor anchor2 = new Anchor("Back To Top");
-		// anchor2.setReference("#BackToTop");
-		//
-		// section1.add(anchor2);
-
-		// Listing 10. Addition of a chapter to the main document
 		document.add(cDomainChapter);
 
 	}
+	
 	
 	
 	private PdfPCell buildHeaderCell(String text){
@@ -323,94 +335,6 @@ public class Generator {
 		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
 		
 		return t;
-	}
-
-	public void buildContent1(Document document) throws MalformedURLException,
-			IOException, DocumentException {
-
-		// // Listing 3. Creation of paragraph object
-		// Anchor anchorTarget = new Anchor("First page of the document.");
-		// anchorTarget.setName("BackToTop");
-		// Paragraph paragraph1 = new Paragraph();
-		//
-		// paragraph1.setSpacingBefore(50);
-		//
-		// paragraph1.add(anchorTarget);
-		// document.add(paragraph1);
-		//
-		// document.add(new Paragraph(
-		// "Some more text on the first page with different color and font type.",
-		// FontFactory.getFont(FontFactory.COURIER, 14, Font.BOLD,
-		// new CMYKColor(0, 255, 0, 0))));
-
-		// Section section1 = addParagraph(document);
-
-		Font font = Fonts.FONT_TITILE2;
-		// 创建段落
-		// BaseFont bfChinese = BaseFont.createFont( "STSongStd-Light" ,
-		// "UniGB-UCS2-H" , false );
-		Paragraph domain = new Paragraph("第一章 医疗服务域——住院业务接口表", font);
-		domain.setAlignment(Paragraph.ALIGN_CENTER);
-		Chapter domainChapter = new Chapter(domain, 1);
-		// 编号深度为0，即不显示编号
-		domainChapter.setNumberDepth(0);
-
-		// Listing 5. Creation of section object
-		Paragraph title = new Paragraph("门急诊业务共包括26张业务信息接口表", font);
-
-		Section section1 = domainChapter.addSection(title);
-		Paragraph someSectionText = new Paragraph(
-				"This text comes as part of section 1 of chapter 1.");
-		section1.add(someSectionText);
-		someSectionText = new Paragraph("Following is a 3 X 2 table.");
-		section1.add(someSectionText);
-		document.add(domain);
-		document.add(domainChapter);
-
-		// // Listing 6. Creation of table object
-		// PdfPTable t = new PdfPTable(3);
-		//
-		// t.setSpacingBefore(25);
-		// t.setSpacingAfter(25);
-		// PdfPCell c1 = new PdfPCell(new Phrase("Header1"));
-		// t.addCell(c1);
-		// PdfPCell c2 = new PdfPCell(new Phrase("Header2"));
-		// t.addCell(c2);
-		// PdfPCell c3 = new PdfPCell(new Phrase("Header3"));
-		// t.addCell(c3);
-		// t.addCell("1.1");
-		// t.addCell("1.2");
-		// t.addCell("1.3");
-		// section1.add(t);
-		//
-		// // Listing 7. Creation of list object
-		// List l = new List(true, false, 10);
-		// l.add(new ListItem("First item of list"));
-		// l.add(new ListItem("Second item of list"));
-		// section1.add(l);
-		//
-		// // Listing 8. Adding image to the main document
-		//
-		// Image image2 = Image.getInstance(Generator.class
-		// .getResource("/IBMLogo.bmp"));
-		// image2.scaleAbsolute(120f, 120f);
-		// section1.add(image2);
-		//
-		// // Listing 9. Adding Anchor to the main document.
-		// Paragraph title2 = new Paragraph("Using Anchor", FontFactory.getFont(
-		// FontFactory.HELVETICA, 16, Font.BOLD, new CMYKColor(0, 255, 0,
-		// 0)));
-		// section1.add(title2);
-		//
-		// title2.setSpacingBefore(5000);
-		// Anchor anchor2 = new Anchor("Back To Top");
-		// anchor2.setReference("#BackToTop");
-		//
-		// section1.add(anchor2);
-
-		// Listing 10. Addition of a chapter to the main document
-		// document.add(chapter1);
-
 	}
 
 	public Section addParagraph(Document document) throws DocumentException {

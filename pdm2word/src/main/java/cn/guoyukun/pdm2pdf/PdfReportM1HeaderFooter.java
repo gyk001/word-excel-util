@@ -1,9 +1,6 @@
 package cn.guoyukun.pdm2pdf;
 
-import java.io.IOException;
-
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
