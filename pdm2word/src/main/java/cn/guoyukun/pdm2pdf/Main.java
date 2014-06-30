@@ -32,7 +32,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		String[] domains = new String[]{"MS"};
 		
-		final String pdm = "/client-3.2.xml";
+		final String pdm = "/client-3.3.3.pdm";
 		String pdf= "/Users/Guo/Desktop/db.pdf";
 		gen(pdm, pdf, domains);
 	}
@@ -46,7 +46,7 @@ public class Main {
 		Map<String,TableInfo> tables = r.getTables();
 		
 		Generator g = new Generator();
-		g.setTables(tables).newPdf(pdf).addCover();
+		g.setTables(tables).newPdf(pdf, "V"+r.getVersion()).addCover(r.getVersion());
 
 		for(String code: domainCodes){
 			Domain domain = loadDomainConfig(code);

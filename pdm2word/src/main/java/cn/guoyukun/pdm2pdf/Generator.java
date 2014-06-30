@@ -51,10 +51,11 @@ public class Generator {
 	// 表数据
 	private Map<String,TableInfo> tables;
 
-	private void setHeaderFooter(PdfWriter writer) throws DocumentException, IOException {
+	private void setHeaderFooter(PdfWriter writer,String left, String right) throws DocumentException, IOException {
 		// 第几页/共几页 模式。
 		PdfReportM1HeaderFooter headerFooter = new PdfReportM1HeaderFooter();// 就是上面那个类
-		headerFooter.setHeader("中科软科技股份有限公司");
+		headerFooter.setHeader(left);
+		headerFooter.setHeaderRight(right);
 		// 跳过封皮
 		headerFooter.setPageOffset(-1);
 		headerFooter.setPresentFontSize(10);
@@ -62,7 +63,7 @@ public class Generator {
 		writer.setPageEvent(headerFooter);
 	}
 	
-	public Generator newPdf(String pdf) throws DocumentException,
+	public Generator newPdf(String pdf, String version) throws DocumentException,
 			MalformedURLException, IOException {
 		// 横版A4
 		document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
@@ -70,7 +71,7 @@ public class Generator {
 		writer = PdfWriter.getInstance(document,
 				new FileOutputStream(pdf));
 		// 页眉页脚
-		setHeaderFooter(writer);
+		setHeaderFooter(writer, "中科软科技股份有限公司", version);
 		writer.setFullCompression();
 		writer.setPdfVersion(PdfWriter.VERSION_1_4);
 		//TODO: 设置行间距，没试出效果
@@ -89,7 +90,7 @@ public class Generator {
 	 * 
 	 * @throws DocumentException
 	 */
-	public Generator addCover() throws DocumentException {
+	public Generator addCover(String version) throws DocumentException {
 		// 封皮
 		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER);
 		anchorTarget.setName("BackToTop");
@@ -104,7 +105,7 @@ public class Generator {
 		document.add(paragraph1);
 
 		document.add(new Paragraph("封皮！！！", Fonts.FONT_TITILE1));
-		document.add(new Paragraph("V 3.1", Fonts.FONT_FOOTER));
+		document.add(new Paragraph("V "+version, Fonts.FONT_FOOTER));
 		return this;
 	}
 

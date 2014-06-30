@@ -42,6 +42,7 @@ public class PdmReader {
 			OBJ_URI);
 
 	private static final String DOMAINS_XPATH = "/Model/o:RootObject/c:Children/o:Model/c:Packages/o:Package";
+	private static final String VERSION_XPATH = "/Model/o:RootObject/c:Children/o:Model/a:Version";
 
 	private static final XPathFactory factory = XPathFactory.instance();
 	
@@ -51,14 +52,27 @@ public class PdmReader {
 	private static final XPathExpression<Element> EXPR_TABLE = getXpath("c:Tables/o:Table", Filters.element(), C_NS, O_NS);
 	// 列
 	private static final XPathExpression<Element> EXPR_COLUMN = getXpath("c:Columns/o:Column", Filters.element(), C_NS, O_NS);
+// 版本
+	private static final XPathExpression<Element> EXPR_VERSION = getXpath(VERSION_XPATH, Filters.element(), C_NS, O_NS, A_NS);
 
 	private Document doc;
 
 	private Map<String, TableInfo> tables = new HashMap<String, TableInfo>();
 
+	private String version;
+	
+	
+	
+	public String getVersion() {
+		return version;
+	}
+
 	public void parse(InputStream input) throws JDOMException {
 		Document doc = getDoc(input);
 		Element root = doc.getRootElement();
+		
+		version = EXPR_VERSION.evaluateFirst(root).getText();
+		
 		parseDomains(root);
 	}
 

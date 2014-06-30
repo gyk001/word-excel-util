@@ -30,6 +30,7 @@ public class PdfReportM1HeaderFooter extends PdfPageEventHelper {
 	 * 页眉
 	 */
 	public String header = "";
+	private String headerRight = "";
 
 	/**
 	 * 文档字体大小，页脚页眉最好和文本大小一致
@@ -54,7 +55,17 @@ public class PdfReportM1HeaderFooter extends PdfPageEventHelper {
 	private int pageOffset = 0;
 	// 是否显示偏移的页面的页眉页脚，比如略过封皮则不需要显示
 	private boolean showOffset=false;
+
 	
+	
+	public String getHeaderRight() {
+		return headerRight;
+	}
+
+	public void setHeaderRight(String headerRight) {
+		this.headerRight = headerRight;
+	}
+
 	public boolean isShowOffset() {
 		return showOffset;
 	}
@@ -144,6 +155,11 @@ public class PdfReportM1HeaderFooter extends PdfPageEventHelper {
 				Element.ALIGN_LEFT, new Phrase(header, fontDetail),
 				document.left(), document.top() + 20, 0);
 
+		ColumnText.showTextAligned(writer.getDirectContent(),
+				Element.ALIGN_RIGHT, new Phrase(headerRight, fontDetail),
+				document.right(), document.top() + 20, 0);
+
+		
 		// 2.写入前半部分的 第 X页/共
 		int pageS = writer.getPageNumber()+pageOffset;
 		String foot1 = "第 " + pageS + " 页 /共";
