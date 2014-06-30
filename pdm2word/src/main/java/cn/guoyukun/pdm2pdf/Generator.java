@@ -79,14 +79,10 @@ public class Generator {
 		return this;
 	}
 
-	
-	
 	public void closePdf(){
 		document.close();
 		writer.close();
 	}
-	
-	
 
 	/**
 	 * 封皮
@@ -256,10 +252,11 @@ public class Generator {
 		// 表关系图章节
 		Section sTableImage = parentSection.addSection(pTableImageTitle);
 		
-		
+		String img = "/table_rel/"+biz.getCode()+".png";
+		LOG.info("加载关系图[{}]",img);
 		// 表关系图
 		Image iTableImg = Image.getInstance(Generator.class
-				.getResource("/table_rel/biz1.png"), true);
+				.getResource(img), true);
 		
 		//iTableImg.setAlt("说明！！");
 		iTableImg.scaleToFit(360f, 480f);
@@ -267,19 +264,22 @@ public class Generator {
 		//iTableImg.scaleAbsolute(360f, 360f);
 		//iTableImg.setAlignment(Image.TEXTWRAP);
 		
-		iTableImg.setAlignment(Image.MIDDLE);
+		//iTableImg.setAlignment(Image.MIDDLE);
+		iTableImg.setIndentationLeft(20f);
 		
 		sTableImage.add(iTableImg);
-		
 		iTableImg.setBorder(10);
 		iTableImg.setBorderColor(BaseColor.GREEN);
 		iTableImg.setBorderWidth(4);
+		iTableImg.setAlignment(Image.LEFT);
 		iTableImg.enableBorderSide(Rectangle.BOX);
 		iTableImg.setSpacingBefore(10f);
 		iTableImg.setSpacingAfter(10);
 		Chunk  c = new Chunk("xxxxx", Fonts.FONT_TITILE1);
+		//c.setNewPage();
 		sTableImage.add(c);
 		sTableImage.setComplete(true);
+		
 		
 	}
 	
@@ -297,13 +297,13 @@ public class Generator {
 		// 表清单章节
 		Section sTableList = parentSection.addSection(pTableListTitle);
 		// 表清单说明
-		Paragraph someSectionText = new Paragraph("门急诊业务共包括26张业务信息接口表",
+		Paragraph someSectionText = new Paragraph(biz.getName()+"业务共包括XX张业务信息接口表",
 				Fonts.FONT_MAIN_TEXT);
 		someSectionText.setSpacingBefore(10);
 		someSectionText.setFirstLineIndent(30);
 		sTableList.add(someSectionText);
 		// 表清单表格
-		PdfPTable tTableList = buildTableList();
+		PdfPTable tTableList = buildTableList(sTableList, biz);
 		sTableList.add(tTableList);		
 	}
 	
@@ -366,12 +366,41 @@ public class Generator {
 		return cell;
 	}
 	
-	public PdfPTable buildTableList() throws DocumentException{
+	private void addTableTrees(PdfPTable t, List<TableTree> trees){
+		if(trees==null){
+			return;
+		}
+		for(TableTree tree: trees){
+			addTableTree(t, tree);
+		}
+	}
+	
+	private void addTableTree(PdfPTable t, TableTree tree){
+		if(tree==null){
+			return;
+		}
+		String code = tree.getCode();
+		LOG.info("添加清单:[{}]",code);
+		String rel = tree.getRel();
+		TableInfo tableInfo = tables.get(code);
+		String name = tableInfo.getName();
+		String desc = tableInfo.getDesc();
+		// 表内容
+		t.addCell(buildCell(name));
+		t.addCell(buildCell(code));
+		t.addCell(buildCell(rel));
+		t.addCell(buildCell(desc));
+		List<TableTree> subTrees = tree.getSubTables();
+		addTableTrees(t, subTrees);
+				
+	}
+	
+	public PdfPTable buildTableList(Section parentSection, Biz biz) throws DocumentException{
 		PdfPTable t = new PdfPTable(4);
 		// 宽度百分比，相对于父容器
 		t.setWidthPercentage(98);
 		// 各列宽度百分比
-		t.setWidths(new int[]{30,30,10,30});
+		t.setWidths(new int[]{30,20,20,30});
 		// 上下间隙
 		t.setSpacingBefore(25);
 		t.setSpacingAfter(25);
@@ -392,102 +421,112 @@ public class Generator {
 		t.addCell(buildHeaderCell("表英文名"));
 		t.addCell(buildHeaderCell("表关系"));
 		t.addCell(buildHeaderCell("表描述"));
+
+		//TODO: 第一行不显示，所以填充一行占位！！
+		t.addCell(buildCell(""));
+		t.addCell(buildCell(""));
+		t.addCell(buildCell(""));
+		t.addCell(buildCell(""));
+		
+		List<TableTree> tableTrees = biz.getTableTrees();
+		addTableTrees(t, tableTrees);
+		
 		// 表内容
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("主表"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("2层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("3层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("主表"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("2层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("3层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("主表"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("2层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("3层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("主表"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("2层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("3层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("主表"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("2层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		
-		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		t.addCell(buildCell("3层子表 1..n"));
-		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("主表"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("2层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("3层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("主表"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("2层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("3层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("主表"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("2层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("3层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("主表"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("2层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("3层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("主表"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("2层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
+//		
+//		t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
+//		t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
+//		t.addCell(buildCell("3层子表 1..n"));
+//		t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
 		
 		return t;
 	}

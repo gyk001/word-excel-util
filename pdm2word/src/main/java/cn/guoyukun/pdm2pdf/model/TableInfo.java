@@ -8,11 +8,18 @@ import java.util.Map;
 import cn.com.sinosoft.ie.data.reverse.vo.ColInfo;
 
 public class TableInfo extends Model {
+	private String desc;
 	private static final long serialVersionUID = 6037601412419170041L;
 	private Map<String, ColInfo>  columns = new LinkedHashMap<String, ColInfo>();
 	private Map<String, ColInfo>  headerColumns = new LinkedHashMap<String, ColInfo>();
 	private Map<String, ColInfo>  footerColumns = new LinkedHashMap<String, ColInfo>();
 	
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
 	public Map<String, ColInfo> getColumns() {
 		return columns;
 	}

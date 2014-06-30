@@ -56,7 +56,6 @@ public class Main {
 				
 	}
 	
-	
 	private static Domain loadDomainConfig(String domainCode) throws FileNotFoundException{
 		String config = "/domain/"+domainCode+".json";
 		LOG.info("加载业务域[{}]",config);
@@ -86,7 +85,23 @@ public class Main {
 			throw new FileNotFoundException(config+"文件不存在！");
 		}
 		JsonReader jr = new JsonReader(new InputStreamReader(is));
-		return GSON.fromJson(jr, Biz.class);
+		Biz biz =  GSON.fromJson(jr, Biz.class);
+		List<TableTree> tableTrees = biz.getTableTrees();
+		calcTableRel(tableTrees, 0);
+		return biz;
+	}
+	
+	
+	private static void calcTableRel(List<TableTree> tableTrees, int level){
+		final String[] TITLE=new String[]{"主表","子表","2层子表","3层子表","4层子表","5层子表"};
+		if(tableTrees==null){
+			return ;
+		}
+		for(TableTree tree: tableTrees){
+			String rel = TITLE[level];
+			tree.setRel(rel+" ("+tree.getRel()+")");
+			calcTableRel(tree.getSubTables(), level+1);
+		}
 	}
 	
 	

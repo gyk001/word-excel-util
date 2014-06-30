@@ -103,11 +103,13 @@ public class PdmReader {
 	private TableInfo parseTable(Element table) throws JDOMException {
 		String tableCode = table.getChildText("Code", A_NS);
 		String tableName = table.getChildText("Name", A_NS);
+		String tableDesc = table.getChildText("Comment",A_NS);
 		LOG.info("解析表[{}]", tableCode);
 
 		TableInfo t = new TableInfo();
 		t.setCode(tableCode);
 		t.setName(tableName);
+		t.setDesc(tableDesc);
 		// 全部字段
 		Map<String, ColInfo> allColumns = parseColumns(table);
 		Map<String, ColInfo> headerColumns = Maps.newLinkedHashMap();
