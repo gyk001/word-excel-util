@@ -185,10 +185,10 @@ public class PdmReader {
 		colInfo.setDesc(desc);
 		colInfo.setType(type);
 		 
-		if(nullable==null && "1".equals( nullable)){
-			colInfo.setNullable(true);	
+		if(nullable!=null && "1".equals( nullable)){
+			colInfo.setNullable(false);	
 		}else{
-			colInfo.setNullable(false);
+			colInfo.setNullable(true);
 		}
 		
 		return colInfo;
