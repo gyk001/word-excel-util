@@ -1,4 +1,4 @@
-package cn.guoyukun.pdm2pdf;
+package cn.guoyukun.pdm2pdf.pdf;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -45,7 +45,7 @@ public class PdfReportM1HeaderFooter extends PdfPageEventHelper {
 	public PdfTemplate total;
 
 	// 基础字体对象
-	public BaseFont bf = null;
+	public BaseFont bf = Fonts.BF_SimSun;
 
 	// 利用基础字体生成的字体对象，一般用于生成中文文字
 	public Font fontDetail = null;

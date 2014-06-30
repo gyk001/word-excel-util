@@ -1,0 +1,17 @@
+{
+    "code": "xx",
+    "name": "转诊",
+    "tableTrees": [
+        {
+            "code": "T_MS_TRANSFER",
+            "rel":"1..n"
+            "tableTrees": [
+                {
+                    "code": "T_MS_TRANSFER_OPRE",
+                    "name": "转诊手术记录",
+                    "rel":"1..1"
+                }
+            ]
+        }
+    ]
+}

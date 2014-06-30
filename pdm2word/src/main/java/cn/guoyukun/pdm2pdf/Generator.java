@@ -3,10 +3,26 @@ package cn.guoyukun.pdm2pdf;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.com.sinosoft.ie.data.reverse.vo.ColInfo;
+import cn.guoyukun.pdm2pdf.model.Biz;
+import cn.guoyukun.pdm2pdf.model.Domain;
+import cn.guoyukun.pdm2pdf.model.TableInfo;
+import cn.guoyukun.pdm2pdf.model.TableTree;
+import cn.guoyukun.pdm2pdf.pdf.Fonts;
+import cn.guoyukun.pdm2pdf.pdf.PdfReportM1HeaderFooter;
 
 import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -16,6 +32,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -25,15 +42,17 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 public class Generator {
+	//日志对象
+	private static final Logger LOG = LoggerFactory.getLogger(Generator.class);
+	private Document document;
+	private PdfWriter writer;
+	// 章节索引
 	private int chapterIndex = 1;
-	
-	public void generator(String pdm, String pdf) throws MalformedURLException,
-			DocumentException, IOException {
-		newPdf(pdf);
-	}
+	// 表数据
+	private Map<String,TableInfo> tables;
 
 	private void setHeaderFooter(PdfWriter writer) throws DocumentException, IOException {
-		// 更改事件，瞬间变身 第几页/共几页 模式。
+		// 第几页/共几页 模式。
 		PdfReportM1HeaderFooter headerFooter = new PdfReportM1HeaderFooter();// 就是上面那个类
 		headerFooter.setHeader("中科软科技股份有限公司");
 		// 跳过封皮
@@ -43,12 +62,12 @@ public class Generator {
 		writer.setPageEvent(headerFooter);
 	}
 	
-	public Document newPdf(String pdf) throws DocumentException,
+	public Generator newPdf(String pdf) throws DocumentException,
 			MalformedURLException, IOException {
 		// 横版A4
-		Document document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
+		document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
 		// 
-		PdfWriter writer = PdfWriter.getInstance(document,
+		writer = PdfWriter.getInstance(document,
 				new FileOutputStream(pdf));
 		// 页眉页脚
 		setHeaderFooter(writer);
@@ -57,23 +76,24 @@ public class Generator {
 		//TODO: 设置行间距，没试出效果
 		writer.setInitialLeading(-100f);
 		document.open();
-		
-				
-		buildCover(document);
-		buildContent(document);
-		// buildContent(document);
+		return this;
+	}
+
+	
+	
+	public void closePdf(){
 		document.close();
 		writer.close();
-		return document;
 	}
+	
+	
 
 	/**
 	 * 封皮
 	 * 
-	 * @param document
 	 * @throws DocumentException
 	 */
-	private void buildCover(Document document) throws DocumentException {
+	public Generator addCover() throws DocumentException {
 		// 封皮
 		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER);
 		anchorTarget.setName("BackToTop");
@@ -89,17 +109,9 @@ public class Generator {
 
 		document.add(new Paragraph("封皮！！！", Fonts.FONT_TITILE1));
 		document.add(new Paragraph("V 3.1", Fonts.FONT_FOOTER));
-
+		return this;
 	}
 
-	
-	public void buildContent(Document document) throws MalformedURLException, IOException, DocumentException{
-		buildDomainContent1(document);
-		// TODO: 测试
-		buildDomainContent1(document);
-		buildDomainContent1(document);
-	}
-	
 	/**
 	 * 构建一个业务的内容
 	 * @param cParentChapter
@@ -107,32 +119,167 @@ public class Generator {
 	 * @throws IOException 
 	 * @throws MalformedURLException 
 	 */
-	public void buildBiz(Section parentSection) throws DocumentException, MalformedURLException, IOException{
+	public void addBiz(Section parentSection, Biz biz) throws DocumentException, MalformedURLException, IOException{
 		
-		// ============ 业务开始 ==============
+		String bizTitle = biz.getName();
 		// 业务标题
-		Paragraph pBiz = new Paragraph("住院业务",
+		Paragraph pBiz = new Paragraph(bizTitle,
 						Fonts.FONT_TITILE2);
 		// 业务章节
 		Section sBiz = parentSection.addSection(pBiz);
-		//sBiz.setTriggerNewPage(true);
 
+		// 表关系章节
+		buildTableRelationship(sBiz, biz);
+		// 表清单章节
+		buildTableListSection(sBiz, biz);
+		// 所有表结构
+		buildAllTableDetail(sBiz, biz);
+	}
+	
+	/**
+	 * 所有表结构
+	 * @param parentSection
+	 * @throws DocumentException 
+	 */
+	public void buildAllTableDetail(Section parentSection, Biz biz) throws DocumentException{
+		String title = biz.getName()+"接口表明细";
+		// 明细标题
+		Paragraph pTitle = new Paragraph(title,
+				Fonts.FONT_TITILE2);
+		// 表明细章节
+		Section section = parentSection.addSection(pTitle);
+		
+		// 循环生成表树的结构
+		List<TableTree> tableTrees = biz.getTableTrees();
+		if(tableTrees==null){
+			return ;
+		}
+		for(TableTree tableTree: tableTrees){
+			addTableTree(section, tableTree);
+		}
+	}
+	
+	
+	// 生成一个表树得结构
+	public void addTableTree(Section parentSection, TableTree tableTree) throws DocumentException{
+		String code = tableTree.getCode();
+		String title = tables.get(code).getName()+"结构";
+		// 表结构标题
+		Paragraph pTitle = new Paragraph(title,
+				Fonts.FONT_TITILE3);
+		// 表结构章节
+		Section section = parentSection.addSection(pTitle);
+		// 生成表结构
+		TableInfo tableInfo = tables.get(code);
+		addTable(section, tableInfo);
+		// 递归子表数
+		List<TableTree> subs = tableTree.getSubTables();
+		if(subs==null){
+			return ;
+		}
+		for(TableTree sub: subs){
+			addTableTree(section, sub);
+		}
+	}
+	
+	public void addTable(Section section, TableInfo tableInfo) throws DocumentException{
+		PdfPTable t = new PdfPTable(5);
+		// 宽度百分比，相对于父容器
+		t.setWidthPercentage(98);
+		// 各列宽度百分比
+		t.setWidths(new int[]{30,20,12,8,30});
+		// 上下间隙
+		t.setSpacingBefore(25);
+		t.setSpacingAfter(25);
+		// 设置标题行有几行，跨页时会再生成标题行
+		t.setHeaderRows(1);
+		/*如果出现某些行中的文本非常大， 
+	    那么iText将按照“行优先”的方式对表格进行分页处理， 
+	    所谓“行优先”是说：当遇到无法在当前页显示完整的一行时， 
+	    该行将被放到下一页进行显示，而只有当一整业都无法显示完此行时， 
+	    iText才会将此行拆开显示在两页中。如果不想使用“行优先”的方式， 
+	    而是想采用“页优先”方式（保证填满当前页面的前提下，决定是否需要分拆行）显示， 
+	    可使用方法setSplitLate(false)。 
+	    */  
+	    t.setSplitLate(true);  
+	    t.setSplitRows(false); 
+		// 表头
+	    t.addCell(buildHeaderCell("数据项"));
+	    t.addCell(buildHeaderCell("字段名"));
+		t.addCell(buildHeaderCell("数据类型"));
+		t.addCell(buildHeaderCell("填报要求"));
+		t.addCell(buildHeaderCell("描述"));
+		
+		addColumns(t,  tableInfo.getHeaderColumns());
+		addColumns(t,  tableInfo.getColumns());
+		addColumns(t,  tableInfo.getFooterColumns());
+		section.add(t);
+	}
+	
+	private void addCell(PdfPTable t, String text){
+		if(text==null){
+			t.addCell("");	
+		}else{
+			t.addCell(buildCell(text));
+		}
+		
+	}
+	public void addColumns(PdfPTable t, Map<String, ColInfo> cols){
+		if(cols!=null){
+			for(Entry<String,ColInfo> entry: cols.entrySet()){
+				ColInfo colInfo = entry.getValue();
+				if(colInfo==null){
+					LOG.warn("字段【{}】为空！！",entry.getKey());
+					continue;
+				}
+				addCell(t, colInfo.getName());
+				addCell(t, colInfo.getCode() );
+				addCell(t, colInfo.getType());
+				addCell(t, colInfo.isNullable()? "可选": "必填");
+				addCell(t, colInfo.getDesc());
+			}	
+		}
+	}
+	
+	/**
+	 * 表关系章节
+	 * @param parentSection
+	 * @throws BadElementException
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public void buildTableRelationship(Section parentSection, Biz biz) throws BadElementException, MalformedURLException, IOException{
+		String title = biz.getName()+"关系图";
 		// 表关系图标题
-		Paragraph pTableImageTitle = new Paragraph("住院业务关系图",
+		Paragraph pTableImageTitle = new Paragraph(title,
 				Fonts.FONT_TITILE2);
 		// 表关系图章节
-		Section sTableImage = sBiz.addSection(pTableImageTitle);
+		Section sTableImage = parentSection.addSection(pTableImageTitle);
+		
+		
 		// 表关系图
 		Image iTableImg = Image.getInstance(Generator.class
-				.getResource("/table_rel/biz1.png"));
-		iTableImg.setAlt("说明！！");
+				.getResource("/table_rel/biz1.png"), true);
+		
+		//iTableImg.setAlt("说明！！");
 		iTableImg.scaleToFit(360f, 480f);
+		
 		//iTableImg.scaleAbsolute(360f, 360f);
-		//iTableImg.setAlignment(Image.LEFT);
+		//iTableImg.setAlignment(Image.TEXTWRAP);
+		
+		iTableImg.setAlignment(Image.MIDDLE);
+		
 		sTableImage.add(iTableImg);
 		
-		// 表清单章节
-		buildTableListSection(sBiz);
+		iTableImg.setBorder(10);
+		iTableImg.setBorderColor(BaseColor.GREEN);
+		iTableImg.setBorderWidth(4);
+		iTableImg.enableBorderSide(Rectangle.BOX);
+		iTableImg.setSpacingBefore(10f);
+		iTableImg.setSpacingAfter(10);
+		Chunk  c = new Chunk("xxxxx", Fonts.FONT_TITILE1);
+		sTableImage.add(c);
+		sTableImage.setComplete(true);
 		
 	}
 	
@@ -141,10 +288,12 @@ public class Generator {
 	 * @param cParentChapter
 	 * @throws DocumentException
 	 */
-	public void buildTableListSection(Section parentSection) throws DocumentException{
+	public void buildTableListSection(Section parentSection, Biz biz) throws DocumentException{
+		String title = biz.getName()+"表清单";
 		// 表清单标题
-		Paragraph pTableListTitle = new Paragraph("住院业务接口表清单",
+		Paragraph pTableListTitle = new Paragraph(title,
 				Fonts.FONT_TITILE2);
+		pTableListTitle.setExtraParagraphSpace(10);
 		// 表清单章节
 		Section sTableList = parentSection.addSection(pTableListTitle);
 		// 表清单说明
@@ -160,33 +309,38 @@ public class Generator {
 	
 	/**
 	 * 构建业务域内容
-	 * @param document
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 * @throws DocumentException
 	 */
-	public void buildDomainContent1(Document document) throws MalformedURLException,
+	public void addDomainContent(Domain domain) throws MalformedURLException,
 			IOException, DocumentException {
-		String domainTitle = "医疗服务域";
+		String domainTitle = domain.getName();
 		// 域标题
 		Paragraph pDomainTitle = new Paragraph(domainTitle,
 				Fonts.FONT_TITILE1);
 		pDomainTitle.setAlignment(Paragraph.ALIGN_CENTER);
 		// 章节
-		Chapter cDomainChapter = new Chapter(pDomainTitle, chapterIndex++);
+		Chapter cDomainChapter = new Chapter(domainTitle, chapterIndex++);
 		// 编号深度
-		cDomainChapter.setNumberDepth(1);
+		cDomainChapter.setNumberDepth(0);
+		// 必须添加一个Section。Chapter不会产生目录！！
+		Section section = cDomainChapter.addSection(pDomainTitle);
 		// 分割线
 		LineSeparator line = new LineSeparator(2f, 100, BaseColor.BLACK,
 				Element.ALIGN_CENTER, -5f);
 		pDomainTitle.add(line);
 	
-		// 构建业务内容
-		buildBiz(cDomainChapter);
-		// TODO: 测试！！
-		buildBiz(cDomainChapter);
-		buildBiz(cDomainChapter);
-
+		
+		List<Biz> bizs = domain.getBizs();
+		
+		 // 构建该域下面的业务内容
+		if(bizs!=null && ! bizs.isEmpty()){
+			for(Biz biz: bizs){
+				addBiz(section, biz);
+			}	
+		}
+		
 		document.add(cDomainChapter);
 
 	}
@@ -206,7 +360,8 @@ public class Generator {
 	private PdfPCell buildCell(String text){
 		PdfPCell cell = new PdfPCell();
 		Phrase pText = new Phrase(text,Fonts.FONT_MAIN_TEXT);
-		cell.setHorizontalAlignment(PdfPHeaderCell.ALIGN_LEFT);
+		cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 		cell.addElement(pText);
 		return cell;
 	}
@@ -359,4 +514,15 @@ public class Generator {
 		document.add(domain);
 		return section1;
 	}
+	
+	public Map<String, TableInfo> getTables() {
+		return tables;
+	}
+
+	public Generator setTables(Map<String, TableInfo> tables) {
+		this.tables = tables;
+		return this;
+	}
+
+
 }
