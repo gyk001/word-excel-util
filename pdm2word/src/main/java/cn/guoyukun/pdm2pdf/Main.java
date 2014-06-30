@@ -30,7 +30,7 @@ public class Main {
 	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws Exception {
-		String[] domains = new String[]{"MS"};
+		String[] domains = new String[]{"MS","FL"};
 		
 		final String pdm = "/client-3.3.3.pdm";
 		String pdf= "/Users/Guo/Desktop/db.pdf";

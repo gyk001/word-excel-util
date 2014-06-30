@@ -326,7 +326,7 @@ public class Generator {
 		// 编号深度
 		cDomainChapter.setNumberDepth(0);
 		// 必须添加一个Section。Chapter不会产生目录！！
-		Section section = cDomainChapter.addSection(pDomainTitle);
+		//Section section = cDomainChapter.addSection(pDomainTitle);
 		// 分割线
 		LineSeparator line = new LineSeparator(2f, 100, BaseColor.BLACK,
 				Element.ALIGN_CENTER, -5f);
@@ -338,7 +338,7 @@ public class Generator {
 		 // 构建该域下面的业务内容
 		if(bizs!=null && ! bizs.isEmpty()){
 			for(Biz biz: bizs){
-				addBiz(section, biz);
+				addBiz(cDomainChapter, biz);
 			}	
 		}
 		
