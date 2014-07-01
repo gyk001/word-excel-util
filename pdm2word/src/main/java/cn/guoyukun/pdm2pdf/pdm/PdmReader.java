@@ -118,7 +118,7 @@ public class PdmReader {
 		String tableCode = table.getChildText("Code", A_NS);
 		String tableName = table.getChildText("Name", A_NS);
 		String tableDesc = table.getChildText("Comment",A_NS);
-		LOG.info("解析表[{}]", tableCode);
+		LOG.debug("解析表[{}]", tableCode);
 
 		TableInfo t = new TableInfo();
 		t.setCode(tableCode);
@@ -187,7 +187,7 @@ public class PdmReader {
 			return null;
 		}
 		String code = getColumnAttr(col, "Code");
-		LOG.info("解析列[{}]",code);
+		LOG.debug("解析列[{}]",code);
 		String name = getColumnAttr(col, "Name");
 		String desc = getColumnAttr(col, "Comment");
 		String type = getColumnAttr(col, "DataType");

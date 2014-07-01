@@ -22,7 +22,6 @@ import com.itextpdf.text.Anchor;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -41,9 +40,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
-public class Generator {
+public class PdfGenerator {
 	//日志对象
-	private static final Logger LOG = LoggerFactory.getLogger(Generator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfGenerator.class);
 	private Document document;
 	private PdfWriter writer;
 	// 章节索引
@@ -63,7 +62,7 @@ public class Generator {
 		writer.setPageEvent(headerFooter);
 	}
 	
-	public Generator newPdf(String pdf, String version) throws DocumentException,
+	public PdfGenerator newPdf(String pdf, String version) throws DocumentException,
 			MalformedURLException, IOException {
 		// 横版A4
 		document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
@@ -90,7 +89,7 @@ public class Generator {
 	 * 
 	 * @throws DocumentException
 	 */
-	public Generator addCover(String version) throws DocumentException {
+	public PdfGenerator addCover(String version) throws DocumentException {
 		// 封皮
 		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER);
 		anchorTarget.setName("BackToTop");
@@ -256,7 +255,7 @@ public class Generator {
 		String img = "/table_rel/"+biz.getCode()+".png";
 		LOG.info("加载关系图[{}]",img);
 		// 表关系图
-		Image iTableImg = Image.getInstance(Generator.class
+		Image iTableImg = Image.getInstance(PdfGenerator.class
 				.getResource(img), true);
 		
 		//iTableImg.setAlt("说明！！");
@@ -276,12 +275,10 @@ public class Generator {
 		iTableImg.enableBorderSide(Rectangle.BOX);
 		iTableImg.setSpacingBefore(10f);
 		iTableImg.setSpacingAfter(10);
-		Chunk  c = new Chunk("xxxxx", Fonts.FONT_TITILE1);
-		//c.setNewPage();
-		sTableImage.add(c);
-		sTableImage.setComplete(true);
-		
-		
+//		Chunk  c = new Chunk("xxxxx", Fonts.FONT_TITILE1);
+//		//c.setNewPage();
+//		sTableImage.add(c);
+//		sTableImage.setComplete(true);
 	}
 	
 	/**
@@ -305,7 +302,9 @@ public class Generator {
 		sTableList.add(someSectionText);
 		// 表清单表格
 		PdfPTable tTableList = buildTableList(sTableList, biz);
-		sTableList.add(tTableList);		
+		sTableList.add(tTableList);	
+		
+		pTableListTitle.setAlignment(Paragraph.ALIGN_LEFT);
 	}
 	
 	/**
@@ -559,7 +558,7 @@ public class Generator {
 		return tables;
 	}
 
-	public Generator setTables(Map<String, TableInfo> tables) {
+	public PdfGenerator setTables(Map<String, TableInfo> tables) {
 		this.tables = tables;
 		return this;
 	}

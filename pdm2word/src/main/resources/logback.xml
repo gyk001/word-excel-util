@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+	<contextName>pdm2word</contextName>
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<withJansi>false</withJansi>
+		<encoder charset="utf-8">
+			<pattern>
+				[%level] %d{HH:mm:ss.SSS} -%msg%n %caller{1}
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>

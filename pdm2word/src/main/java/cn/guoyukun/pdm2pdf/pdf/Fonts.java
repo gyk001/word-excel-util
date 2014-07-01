@@ -25,7 +25,7 @@ public class Fonts {
 		static BaseFont SimSun;
 		static {
 			try {
-				SimSun = BaseFont.createFont("/SimSun.ttf",
+				SimSun = BaseFont.createFont("/font/SimSun.ttf",
 						BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
 				;
 			} catch (Exception e) {
