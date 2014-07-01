@@ -49,14 +49,37 @@ public class PdfGenerator {
 	private int chapterIndex = 1;
 	// 表数据
 	private Map<String, TableInfo> tables;
+	// 文档标题，封面上的
 	private String pdfTitle;
+	// 版本
+	private String version;
+	// 生成日期
+	private String generateDate;
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public PdfGenerator setVersion(String version) {
+		this.version = version;
+		return this;
+	}
 
 	public String getPdfTitle() {
 		return pdfTitle;
 	}
-
+	
 	public PdfGenerator setPdfTitle(String pdfTitle) {
 		this.pdfTitle = pdfTitle;
+		return this;
+	}
+	
+	public String getGenerateDate() {
+		return generateDate;
+	}
+
+	public PdfGenerator setGenerateDate(String generateDate) {
+		this.generateDate = generateDate;
 		return this;
 	}
 
@@ -73,9 +96,8 @@ public class PdfGenerator {
 		writer.setPageEvent(headerFooter);
 	}
 
-	public PdfGenerator newPdf(String pdf, String title, String version)
+	public PdfGenerator newPdf(String pdf)
 			throws DocumentException, MalformedURLException, IOException {
-		this.pdfTitle = title;
 		// 横版A4
 		document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
 		//
@@ -100,10 +122,10 @@ public class PdfGenerator {
 		// TODO: 设置行间距，没试出效果
 		writer.setInitialLeading(-100f);
 
-		document.addTitle(title + " " + version);
+		document.addTitle(this.pdfTitle + " " + this.version);
 		document.addAuthor(AUTHOR);
 		document.addCreationDate();
-		document.addSubject(title);
+		document.addSubject(this.pdfTitle);
 		document.addCreator(AUTHOR);
 		writer.setTagged();
 		return this;
@@ -178,25 +200,25 @@ public class PdfGenerator {
 	 * 
 	 * @throws DocumentException
 	 */
-	public PdfGenerator addCover(String version) throws DocumentException {
+	public PdfGenerator addCover() throws DocumentException {
 
 		Paragraph title = new Paragraph(this.pdfTitle, Fonts.FONT_COVER_TITLE);
 		title.setAlignment(Paragraph.ALIGN_CENTER);
 		title.setSpacingBefore(100);
 		document.add(title);
 
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("日期：yyyy年MM月dd日");
-
-		Paragraph pDate = new Paragraph(sdf.format(date), Fonts.FONT_TITILE1);
-		pDate.setAlignment(Paragraph.ALIGN_CENTER);
-		pDate.setSpacingBefore(90f);
-		pDate.setSpacingAfter(10f);
-		document.add(pDate);
-		Paragraph pVersion = new Paragraph("版本：V" + version, Fonts.FONT_TITILE1);
+		
+		Paragraph pVersion = new Paragraph("版本：" + version, Fonts.FONT_TITILE1);
 		pVersion.setAlignment(Paragraph.ALIGN_CENTER);
+		pVersion.setSpacingBefore(90f);
+		pVersion.setSpacingAfter(10f);
 		document.add(pVersion);
 
+		Paragraph pDate = new Paragraph( generateDate, Fonts.FONT_TITILE1);
+		pDate.setAlignment(Paragraph.ALIGN_CENTER);
+		document.add(pDate);
+		
+		
 		// 封皮
 		Anchor anchorTarget = new Anchor(AUTHOR, Fonts.FONT_COVER_SUBTITLE);
 		anchorTarget.setName("BackToTop");

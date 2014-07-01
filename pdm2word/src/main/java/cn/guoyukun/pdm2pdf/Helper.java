@@ -3,37 +3,44 @@ package cn.guoyukun.pdm2pdf;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
-import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.guoyukun.pdm2pdf.model.Biz;
 import cn.guoyukun.pdm2pdf.model.Domain;
-import cn.guoyukun.pdm2pdf.model.TableInfo;
 import cn.guoyukun.pdm2pdf.model.TableTree;
 import cn.guoyukun.pdm2pdf.model.json.JDomain;
 import cn.guoyukun.pdm2pdf.pdm.PdmReader;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import com.itextpdf.text.DocumentException;
 
 public class Helper {
 	// 日志对象
 	private static final Logger LOG = LoggerFactory.getLogger(Helper.class);
 	private static final Gson GSON = new Gson();
 
-	public static void gen(String title, String pdm, String pdf,
-			String[] domainCodes) throws JDOMException, MalformedURLException,
-			DocumentException, IOException {
+	public static String loadNotNullString(Properties props, String key){
+		String value = props.getProperty(key);
+		if(value==null){
+			throw new NullPointerException(key+"键不能为空！");
+		}
+		return value;
+	}
+	
+	public static String[] loadNotNullArray(Properties props, String key){
+		String value = loadNotNullString(props, key);
+		return value.split(",");
+	}
+	
+	
+	public static PdmReader parsePdm(String pdm) throws Exception{
 		File pdmFile = new File(pdm);
 		if (!pdmFile.exists()) {
 			throw new FileNotFoundException(pdm + "不存在！");
@@ -43,21 +50,10 @@ public class Helper {
 		PdmReader r = new PdmReader();
 		r.parse(is);
 		is.close();
-		Map<String, TableInfo> tables = r.getTables();
-
-		PdfGenerator g = new PdfGenerator();
-		g.setTables(tables).newPdf(pdf, title, "V" + r.getVersion()).openPdf()
-				.addOutline().addCover(r.getVersion());
-
-		for (String code : domainCodes) {
-			Domain domain = loadDomainConfig(code);
-			g.addDomainContent(domain);
-		}
-		g.closePdf();
-
+		return r;
 	}
 
-	private static Domain loadDomainConfig(String domainCode)
+	public static Domain loadDomainConfig(String domainCode)
 			throws FileNotFoundException {
 		String config = "/domain/" + domainCode + ".json";
 		LOG.info("加载业务域[{}]", config);
