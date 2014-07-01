@@ -31,12 +31,12 @@ public class Helper {
 	private static final Logger LOG = LoggerFactory.getLogger(Helper.class);
 	private static final Gson GSON = new Gson();
 
-	public static void gen(String title, String pdm, String pdf, String[] domainCodes)
-			throws JDOMException, MalformedURLException, DocumentException,
-			IOException {
+	public static void gen(String title, String pdm, String pdf,
+			String[] domainCodes) throws JDOMException, MalformedURLException,
+			DocumentException, IOException {
 		File pdmFile = new File(pdm);
-		if(! pdmFile.exists()){
-			throw new FileNotFoundException(pdm+"不存在！");
+		if (!pdmFile.exists()) {
+			throw new FileNotFoundException(pdm + "不存在！");
 		}
 		FileInputStream is = new FileInputStream(pdmFile);
 		// 解析pdm
@@ -46,8 +46,8 @@ public class Helper {
 		Map<String, TableInfo> tables = r.getTables();
 
 		PdfGenerator g = new PdfGenerator();
-		g.setTables(tables).newPdf(pdf, title, "V" + r.getVersion())
-				.addCover(r.getVersion());
+		g.setTables(tables).newPdf(pdf, title, "V" + r.getVersion()).openPdf()
+				.addOutline().addCover(r.getVersion());
 
 		for (String code : domainCodes) {
 			Domain domain = loadDomainConfig(code);
@@ -56,7 +56,6 @@ public class Helper {
 		g.closePdf();
 
 	}
-	
 
 	private static Domain loadDomainConfig(String domainCode)
 			throws FileNotFoundException {
@@ -90,28 +89,28 @@ public class Helper {
 		}
 		JsonReader jr = new JsonReader(new InputStreamReader(is));
 		Biz biz = GSON.fromJson(jr, Biz.class);
-		//List<TableTree> tableTrees = biz.getTableTrees();
+		// List<TableTree> tableTrees = biz.getTableTrees();
 		// 表关系直接写到rel里，不手动计算
-		//calcTableRel(tableTrees, 0);
+		// calcTableRel(tableTrees, 0);
 		return biz;
 	}
-	
-	public static int calcTableCount(List<TableTree> trees){
-		if(trees==null){
+
+	public static int calcTableCount(List<TableTree> trees) {
+		if (trees == null) {
 			return 0;
 		}
-		int i=trees.size();
-		for(TableTree tree: trees){
-			i= i+calcTableCount(tree.getSubTables());
+		int i = trees.size();
+		for (TableTree tree : trees) {
+			i = i + calcTableCount(tree.getSubTables());
 		}
 		return i;
 	}
-	
-	public static int calcTableCount(TableTree tree){
-		if(tree==null){
+
+	public static int calcTableCount(TableTree tree) {
+		if (tree == null) {
 			return 0;
 		}
-		return 1+calcTableCount(tree.getSubTables());
+		return 1 + calcTableCount(tree.getSubTables());
 	}
 
 	@SuppressWarnings("unused")
