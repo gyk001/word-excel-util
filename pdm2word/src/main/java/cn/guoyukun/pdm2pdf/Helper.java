@@ -90,7 +90,7 @@ public class Helper {
 		}
 		JsonReader jr = new JsonReader(new InputStreamReader(is));
 		Biz biz = GSON.fromJson(jr, Biz.class);
-		List<TableTree> tableTrees = biz.getTableTrees();
+		//List<TableTree> tableTrees = biz.getTableTrees();
 		// 表关系直接写到rel里，不手动计算
 		//calcTableRel(tableTrees, 0);
 		return biz;
