@@ -1,0 +1,10 @@
+{
+    "code": "CH002",
+    "name": "出生医学证明",
+    "tableTrees": [
+        {
+            "code": "T_CH_BORNCERTIFIC",
+	    "name":"出生医学证明"
+        }
+    ]
+}

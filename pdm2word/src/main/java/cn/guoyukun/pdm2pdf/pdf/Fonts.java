@@ -14,7 +14,9 @@ public class Fonts {
 	// 三级标题字体,12号、加粗
 	public static Font FONT_TITILE3 = new Font(BF_SimSun, 12, Font.BOLD);
 	// 封面标题字体,22号、加粗
-	public static Font FONT_COVER = new Font(BF_SimSun, 22, Font.BOLD);
+	public static Font FONT_COVER_TITLE = new Font(BF_SimSun, 35, Font.BOLD);
+	
+	public static Font FONT_COVER_SUBTITLE = new Font(BF_SimSun, 20, Font.NORMAL);
 
 	// 表格表头行字体,12号、加粗
 	public static Font FONT_TABLE_HEADER_ROW = FONT_TITILE3;

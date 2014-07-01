@@ -90,10 +90,12 @@ public class Helper {
 		JsonReader jr = new JsonReader(new InputStreamReader(is));
 		Biz biz = GSON.fromJson(jr, Biz.class);
 		List<TableTree> tableTrees = biz.getTableTrees();
-		calcTableRel(tableTrees, 0);
+		// 表关系直接写到rel里，不手动计算
+		//calcTableRel(tableTrees, 0);
 		return biz;
 	}
 
+	@SuppressWarnings("unused")
 	private static void calcTableRel(List<TableTree> tableTrees, int level) {
 		final String[] TITLE = new String[] { "主表", "子表", "2层子表", "3层子表",
 				"4层子表", "5层子表" };

@@ -3,6 +3,8 @@ package cn.guoyukun.pdm2pdf;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -90,21 +92,38 @@ public class PdfGenerator {
 	 * @throws DocumentException
 	 */
 	public PdfGenerator addCover(String version) throws DocumentException {
+		
+		Paragraph title = new Paragraph("前置机数据库文档",Fonts.FONT_COVER_TITLE);
+		title.setAlignment(Paragraph.ALIGN_CENTER);
+		title.setSpacingBefore(100);
+		document.add(title);
+		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("日期：yyyy年MM月dd日");
+		
+		Paragraph pDate = new Paragraph(sdf.format(date), Fonts.FONT_TITILE1);
+		pDate.setAlignment(Paragraph.ALIGN_CENTER);
+		pDate.setSpacingBefore(90f);
+		pDate.setSpacingAfter(10f);
+		document.add(pDate);
+		Paragraph pVersion = new Paragraph("版本：V"+version, Fonts.FONT_TITILE1);
+		pVersion.setAlignment(Paragraph.ALIGN_CENTER);
+		document.add(pVersion);
+		
 		// 封皮
-		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER);
+		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER_SUBTITLE);
 		anchorTarget.setName("BackToTop");
 
 		Paragraph paragraph1 = new Paragraph();
 
-		paragraph1.setSpacingBefore(50);
+		paragraph1.setSpacingBefore(220);
 
 		paragraph1.add(anchorTarget);
-		paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
+		paragraph1.setAlignment( Paragraph.ALIGN_CENTER);
 		
 		document.add(paragraph1);
 
-		document.add(new Paragraph("封皮！！！", Fonts.FONT_TITILE1));
-		document.add(new Paragraph("V "+version, Fonts.FONT_FOOTER));
+		
 		return this;
 	}
 
