@@ -31,7 +31,7 @@ public class Helper {
 	private static final Logger LOG = LoggerFactory.getLogger(Helper.class);
 	private static final Gson GSON = new Gson();
 
-	public static void gen(String pdm, String pdf, String[] domainCodes)
+	public static void gen(String title, String pdm, String pdf, String[] domainCodes)
 			throws JDOMException, MalformedURLException, DocumentException,
 			IOException {
 		File pdmFile = new File(pdm);
@@ -46,7 +46,7 @@ public class Helper {
 		Map<String, TableInfo> tables = r.getTables();
 
 		PdfGenerator g = new PdfGenerator();
-		g.setTables(tables).newPdf(pdf, "V" + r.getVersion())
+		g.setTables(tables).newPdf(pdf, title, "V" + r.getVersion())
 				.addCover(r.getVersion());
 
 		for (String code : domainCodes) {

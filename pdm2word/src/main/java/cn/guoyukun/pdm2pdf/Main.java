@@ -19,7 +19,7 @@ public class Main {
 		//加载配置
 		Properties p = new Properties();
 		p.load(Main.class.getResourceAsStream("/config.properties"));
-		
+		final String title=p.getProperty("title");
 		
 		final String d = p.getProperty("domains");
 		if(d==null || d.isEmpty()){
@@ -33,7 +33,7 @@ public class Main {
 		LOG.info("目标PDF:{}",pdf);
 		LOG.info("目标业务域：{}",Arrays.asList(domains));
 		// 生成文档
-		Helper.gen(pdm, pdf, domains);
+		Helper.gen(title, pdm, pdf, domains);
 	}
 	
 	

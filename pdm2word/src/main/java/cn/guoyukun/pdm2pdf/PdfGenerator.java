@@ -32,7 +32,6 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -42,6 +41,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 public class PdfGenerator {
+	private static final String AUTHOR ="中科软科技股份有限公司";
 	//日志对象
 	private static final Logger LOG = LoggerFactory.getLogger(PdfGenerator.class);
 	private Document document;
@@ -50,6 +50,18 @@ public class PdfGenerator {
 	private int chapterIndex = 1;
 	// 表数据
 	private Map<String,TableInfo> tables;
+	private String pdfTitle;
+	
+	
+
+	public String getPdfTitle() {
+		return pdfTitle;
+	}
+
+	public PdfGenerator setPdfTitle(String pdfTitle) {
+		this.pdfTitle = pdfTitle;
+		return this;
+	}
 
 	private void setHeaderFooter(PdfWriter writer,String left, String right) throws DocumentException, IOException {
 		// 第几页/共几页 模式。
@@ -61,23 +73,33 @@ public class PdfGenerator {
 		headerFooter.setPresentFontSize(10);
 		writer.setBoxSize("art", PageSize.A4);
 		writer.setPageEvent(headerFooter);
-		// 保证图片不会漂移
-		writer.setStrictImageSequence(true);
 	}
 	
-	public PdfGenerator newPdf(String pdf, String version) throws DocumentException,
+	public PdfGenerator newPdf(String pdf, String title, String version) throws DocumentException,
 			MalformedURLException, IOException {
+		this.pdfTitle = title;
 		// 横版A4
 		document = new Document(PageSize.A4.rotate(), 50, 50, 50, 50);
 		// 
 		writer = PdfWriter.getInstance(document,
 				new FileOutputStream(pdf));
-		// 页眉页脚
-		setHeaderFooter(writer, "中科软科技股份有限公司", version);
+		
+		writer.setPdfVersion(PdfWriter.VERSION_1_7);
 		writer.setFullCompression();
-		writer.setPdfVersion(PdfWriter.VERSION_1_4);
+		// 保证图片不会漂移
+		writer.setStrictImageSequence(true);
+		// TOC		
+		writer.setViewerPreferences(PdfWriter.PageModeUseThumbs);
+		// 页眉页脚
+		setHeaderFooter(writer, AUTHOR, version);
 		//TODO: 设置行间距，没试出效果
 		writer.setInitialLeading(-100f);
+		
+		document.addTitle(title+" "+version);
+		document.addAuthor(AUTHOR);
+		document.addCreationDate();
+		document.addSubject(title);
+		document.addCreator(AUTHOR);
 		document.open();
 		return this;
 	}
@@ -94,7 +116,7 @@ public class PdfGenerator {
 	 */
 	public PdfGenerator addCover(String version) throws DocumentException {
 		
-		Paragraph title = new Paragraph("前置机数据库文档",Fonts.FONT_COVER_TITLE);
+		Paragraph title = new Paragraph(this.pdfTitle,Fonts.FONT_COVER_TITLE);
 		title.setAlignment(Paragraph.ALIGN_CENTER);
 		title.setSpacingBefore(100);
 		document.add(title);
@@ -112,7 +134,7 @@ public class PdfGenerator {
 		document.add(pVersion);
 		
 		// 封皮
-		Anchor anchorTarget = new Anchor("中科软科技股份有限公司", Fonts.FONT_COVER_SUBTITLE);
+		Anchor anchorTarget = new Anchor(AUTHOR, Fonts.FONT_COVER_SUBTITLE);
 		anchorTarget.setName("BackToTop");
 
 		Paragraph paragraph1 = new Paragraph();
