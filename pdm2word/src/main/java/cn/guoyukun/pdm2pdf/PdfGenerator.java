@@ -21,7 +21,6 @@ import cn.guoyukun.pdm2pdf.pdf.Fonts;
 import cn.guoyukun.pdm2pdf.pdf.PdfReportM1HeaderFooter;
 
 import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
@@ -62,6 +61,8 @@ public class PdfGenerator {
 		headerFooter.setPresentFontSize(10);
 		writer.setBoxSize("art", PageSize.A4);
 		writer.setPageEvent(headerFooter);
+		// 保证图片不会漂移
+		writer.setStrictImageSequence(true);
 	}
 	
 	public PdfGenerator newPdf(String pdf, String version) throws DocumentException,
@@ -161,9 +162,9 @@ public class PdfGenerator {
 		// 明细标题
 		Paragraph pTitle = new Paragraph(title,
 				Fonts.FONT_TITILE2);
+		
 		// 表明细章节
 		Section section = parentSection.addSection(pTitle);
-		
 		// 循环生成表树的结构
 		List<TableTree> tableTrees = biz.getTableTrees();
 		if(tableTrees==null){
@@ -259,11 +260,11 @@ public class PdfGenerator {
 	/**
 	 * 表关系章节
 	 * @param parentSection
-	 * @throws BadElementException
 	 * @throws MalformedURLException
 	 * @throws IOException
+	 * @throws DocumentException 
 	 */
-	public void buildTableRelationship(Section parentSection, Biz biz) throws BadElementException, MalformedURLException, IOException{
+	public void buildTableRelationship(Section parentSection, Biz biz) throws MalformedURLException, IOException, DocumentException{
 		String title = biz.getName()+"关系图";
 		// 表关系图标题
 		Paragraph pTableImageTitle = new Paragraph(title,
@@ -271,33 +272,40 @@ public class PdfGenerator {
 		// 表关系图章节
 		Section sTableImage = parentSection.addSection(pTableImageTitle);
 		
+		
+		
 		String img = "/table_rel/"+biz.getCode()+".png";
 		LOG.info("加载关系图[{}]",img);
 		// 表关系图
 		Image iTableImg = Image.getInstance(PdfGenerator.class
 				.getResource(img), true);
-		
-		//iTableImg.setAlt("说明！！");
 		iTableImg.scaleToFit(360f, 480f);
-		
-		//iTableImg.scaleAbsolute(360f, 360f);
-		//iTableImg.setAlignment(Image.TEXTWRAP);
-		
-		//iTableImg.setAlignment(Image.MIDDLE);
+//		iTableImg.setAlignment(Image.MIDDLE);
 		iTableImg.setIndentationLeft(20f);
-		
-		sTableImage.add(iTableImg);
-		iTableImg.setBorder(10);
-		iTableImg.setBorderColor(BaseColor.GREEN);
-		iTableImg.setBorderWidth(4);
+//		iTableImg.setBorder(10);
+//		iTableImg.setBorderColor(BaseColor.GREEN);
+//		iTableImg.setBorderWidth(4);
 		iTableImg.setAlignment(Image.LEFT);
-		iTableImg.enableBorderSide(Rectangle.BOX);
+//		iTableImg.enableBorderSide(Rectangle.BOX);
 		iTableImg.setSpacingBefore(10f);
 		iTableImg.setSpacingAfter(10);
+		
+//		iTableImg.setAbsolutePosition(
+//				  (PageSize.POSTCARD.getWidth()
+//				    - iTableImg.getScaledWidth()) / 2,
+//				  (PageSize.POSTCARD.getHeight()
+//-iTableImg.getScaledHeight()) / 2);
+//		
+		//writer.getDirectContent().addImage(iTableImg);
+		
+		sTableImage.add(iTableImg);
 //		Chunk  c = new Chunk("xxxxx", Fonts.FONT_TITILE1);
-//		//c.setNewPage();
+//		c.setNewPage();
 //		sTableImage.add(c);
 //		sTableImage.setComplete(true);
+//		Chunk c = new Chunk();
+//		LineDrawer ld = new LineDrawer(iTableImg);
+//		sTableImage.add(ld);
 	}
 	
 	/**
@@ -313,8 +321,10 @@ public class PdfGenerator {
 		pTableListTitle.setExtraParagraphSpace(10);
 		// 表清单章节
 		Section sTableList = parentSection.addSection(pTableListTitle);
+		
+		int count = Helper.calcTableCount(biz.getTableTrees());
 		// 表清单说明
-		Paragraph someSectionText = new Paragraph(biz.getName()+"业务共包括XX张业务信息接口表",
+		Paragraph someSectionText = new Paragraph(biz.getName()+"业务共包括"+count+"张业务信息接口表",
 				Fonts.FONT_MAIN_TEXT);
 		someSectionText.setSpacingBefore(10);
 		someSectionText.setFirstLineIndent(30);

@@ -56,6 +56,7 @@ public class Helper {
 		g.closePdf();
 
 	}
+	
 
 	private static Domain loadDomainConfig(String domainCode)
 			throws FileNotFoundException {
@@ -93,6 +94,24 @@ public class Helper {
 		// 表关系直接写到rel里，不手动计算
 		//calcTableRel(tableTrees, 0);
 		return biz;
+	}
+	
+	public static int calcTableCount(List<TableTree> trees){
+		if(trees==null){
+			return 0;
+		}
+		int i=trees.size();
+		for(TableTree tree: trees){
+			i= i+calcTableCount(tree.getSubTables());
+		}
+		return i;
+	}
+	
+	public static int calcTableCount(TableTree tree){
+		if(tree==null){
+			return 0;
+		}
+		return 1+calcTableCount(tree.getSubTables());
 	}
 
 	@SuppressWarnings("unused")
