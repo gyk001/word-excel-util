@@ -34,6 +34,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.CMYKColor;
+import com.itextpdf.text.pdf.PdfEncryption;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPHeaderCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -83,7 +84,13 @@ public class PdfGenerator {
 		// 
 		writer = PdfWriter.getInstance(document,
 				new FileOutputStream(pdf));
-		
+//		//1，设置此PDF文件的权限，只有写上的是答应的。这里只答应打印，读取和保存，不答应修改等。 
+//		int intPermissions = PdfWriter.ALLOW_PRINTING|PdfWriter.ALLOW_SCREENREADERS; 
+//		//2，若要实现其他权限如修改等 则需要写进密码，这里是设置密码加密标准或加密类型。 
+//		int intEncryptionType = PdfEncryption.AES_128; 
+//		//3，要是用这个方法需要引进一个jar包（bcprov-jdk15-137.jar）。第一个参数：打开时需要的密码；第二个参数：实用其他其他权限时使用的密码；第三个参数：可使用的权限；第四个参数：密码类型 
+//		writer.setEncryption(null, "hello".getBytes(), intPermissions,intEncryptionType); 
+
 		writer.setPdfVersion(PdfWriter.VERSION_1_7);
 		writer.setFullCompression();
 		// 保证图片不会漂移
