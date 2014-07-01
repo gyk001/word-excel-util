@@ -27,13 +27,11 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Section;
-import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPHeaderCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -320,14 +318,14 @@ public class PdfGenerator {
 		section.add(t);
 	}
 
-	private void addCell(PdfPTable t, String text, boolean red) {
+	private void addCell(PdfPTable t, String text, boolean nullable) {
 		if (text == null) {
 			t.addCell("");
 		} else {
-			if(red){
-				t.addCell(buildCell(text, Fonts.FONT_MAIN_TEXT_RED));
-			}else{
+			if(nullable){
 				t.addCell(buildCell(text));	
+			}else{
+				t.addCell(buildCell(text, Fonts.FONT_MAIN_TEXT_RED));
 			}
 			
 		}
@@ -342,7 +340,7 @@ public class PdfGenerator {
 					LOG.warn("字段【{}】为空！！", entry.getKey());
 					continue;
 				}
-				boolean nullable = ! colInfo.isNullable();
+				boolean nullable = colInfo.isNullable();
 				
 				addCell(t, colInfo.getName(), nullable);
 				addCell(t, colInfo.getCode(), nullable);

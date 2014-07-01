@@ -198,6 +198,13 @@ public class PdmReader {
 		colInfo.setName(name);
 		colInfo.setDesc(desc);
 		colInfo.setType(type);
+		
+		if("ID".equals(colInfo.getCode())){
+			colInfo.setDesc("复合主键：业务ID");
+		}else if("UPLOAD_ORG_CODE".equals(colInfo.getCode())){
+			colInfo.setDesc("复合主键：上传机构代码");
+		}
+		
 		 
 		if(nullable!=null && "1".equals( nullable)){
 			colInfo.setNullable(false);	
