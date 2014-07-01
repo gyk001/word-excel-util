@@ -269,7 +269,7 @@ public class PdfGenerator {
 	public void addTableTree(Section parentSection, TableTree tableTree)
 			throws DocumentException {
 		String code = tableTree.getCode();
-		String title = tables.get(code).getName() + "结构";
+		String title = tables.get(code).getName() + "表";
 		// 表结构标题
 		Paragraph pTitle = new Paragraph(title, Fonts.FONT_TITILE3);
 		// 表结构章节
@@ -320,11 +320,16 @@ public class PdfGenerator {
 		section.add(t);
 	}
 
-	private void addCell(PdfPTable t, String text) {
+	private void addCell(PdfPTable t, String text, boolean red) {
 		if (text == null) {
 			t.addCell("");
 		} else {
-			t.addCell(buildCell(text));
+			if(red){
+				t.addCell(buildCell(text, Fonts.FONT_MAIN_TEXT_RED));
+			}else{
+				t.addCell(buildCell(text));	
+			}
+			
 		}
 
 	}
@@ -337,11 +342,13 @@ public class PdfGenerator {
 					LOG.warn("字段【{}】为空！！", entry.getKey());
 					continue;
 				}
-				addCell(t, colInfo.getName());
-				addCell(t, colInfo.getCode());
-				addCell(t, colInfo.getType());
-				addCell(t, colInfo.isNullable() ? "可选" : "必填");
-				addCell(t, colInfo.getDesc());
+				boolean nullable = ! colInfo.isNullable();
+				
+				addCell(t, colInfo.getName(), nullable);
+				addCell(t, colInfo.getCode(), nullable);
+				addCell(t, colInfo.getType(), nullable);
+				addCell(t, nullable ? "可选" : "必填", nullable);
+				addCell(t, colInfo.getDesc(), nullable);
 			}
 		}
 	}
@@ -442,7 +449,7 @@ public class PdfGenerator {
 		Chapter cDomainChapter = new Chapter(domainTitle, chapterIndex++);
 		// 编号深度
 		cDomainChapter.setNumberDepth(0);
-		// 必须添加一个Section。Chapter不会产生目录！！
+		// 必须添加一个Section。Chapter不会产生目录！！(会产生目录，只有一章的时候阅读器默认隐藏了而已！)
 		// Section section = cDomainChapter.addSection(pDomainTitle);
 		// 分割线
 		LineSeparator line = new LineSeparator(2f, 100, BaseColor.BLACK,
@@ -473,8 +480,12 @@ public class PdfGenerator {
 	}
 
 	private PdfPCell buildCell(String text) {
+		return buildCell(text, Fonts.FONT_MAIN_TEXT);
+	}
+	
+	private PdfPCell buildCell(String text, Font font) {
 		PdfPCell cell = new PdfPCell();
-		Phrase pText = new Phrase(text, Fonts.FONT_MAIN_TEXT);
+		Phrase pText = new Phrase(text, font );
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
 		cell.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 		cell.addElement(pText);
@@ -499,12 +510,12 @@ public class PdfGenerator {
 		String rel = tree.getRel();
 		TableInfo tableInfo = tables.get(code);
 		String name = tableInfo.getName();
-		String desc = tableInfo.getDesc();
+		//String desc = tableInfo.getDesc();
 		// 表内容
 		t.addCell(buildCell(name));
 		t.addCell(buildCell(code));
 		t.addCell(buildCell(rel));
-		t.addCell(buildCell(desc));
+		//t.addCell(buildCell(desc));
 		List<TableTree> subTrees = tree.getSubTables();
 		addTableTrees(t, subTrees);
 
@@ -512,11 +523,12 @@ public class PdfGenerator {
 
 	public PdfPTable buildTableList(Section parentSection, Biz biz)
 			throws DocumentException {
-		PdfPTable t = new PdfPTable(4);
+		PdfPTable t = new PdfPTable(3);
+		t.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
 		// 宽度百分比，相对于父容器
-		t.setWidthPercentage(98);
+		t.setWidthPercentage(80);
 		// 各列宽度百分比
-		t.setWidths(new int[] { 30, 20, 20, 30 });
+		t.setWidths(new int[] { 45, 35, 20 });
 		// 上下间隙
 		t.setSpacingBefore(25);
 		t.setSpacingAfter(25);
@@ -534,138 +546,18 @@ public class PdfGenerator {
 		t.addCell(buildHeaderCell("表中文名"));
 		t.addCell(buildHeaderCell("表英文名"));
 		t.addCell(buildHeaderCell("表关系"));
-		t.addCell(buildHeaderCell("表描述"));
+		//t.addCell(buildHeaderCell("表描述"));
 
 		// TODO: 第一行不显示，所以填充一行占位！！
 		t.addCell(buildCell(""));
 		t.addCell(buildCell(""));
 		t.addCell(buildCell(""));
-		t.addCell(buildCell(""));
+		//t.addCell(buildCell(""));
 
 		List<TableTree> tableTrees = biz.getTableTrees();
 		addTableTrees(t, tableTrees);
 
-		// 表内容
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("主表"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("2层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("3层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("主表"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("2层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("3层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("主表"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("2层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("3层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("主表"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("2层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("3层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("主表"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("2层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-		//
-		// t.addCell(buildCell("住院诊疗实验室检验标本记录表"));
-		// t.addCell(buildCell("T_MS_PATIE_INHS_TS_SAMP"));
-		// t.addCell(buildCell("3层子表 1..n"));
-		// t.addCell(buildCell("记录住院诊疗实验室检验标本信息"));
-
 		return t;
-	}
-
-	public Section addParagraph(Document document) throws DocumentException {
-		// 创建段落
-		Paragraph domain = new Paragraph("第 1 章	医疗服务域----住院业务接口表",
-				FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC,
-						new CMYKColor(0, 255, 255, 17)));
-		Chapter domainChapter = new Chapter(domain, 1);
-		// 编号深度为0，即不显示编号
-		domainChapter.setNumberDepth(0);
-
-		// Listing 5. Creation of section object
-		Paragraph title = new Paragraph("门急诊业务共包括26张业务信息接口表",
-				FontFactory.getFont(FontFactory.HELVETICA, 16, Font.BOLD,
-						new CMYKColor(0, 255, 255, 17)));
-		Section section1 = domainChapter.addSection(title);
-		Paragraph someSectionText = new Paragraph(
-				"This text comes as part of section 1 of chapter 1.");
-		section1.add(someSectionText);
-		someSectionText = new Paragraph("Following is a 3 X 2 table.");
-		section1.add(someSectionText);
-		document.add(domain);
-		return section1;
 	}
 
 	public Map<String, TableInfo> getTables() {

@@ -129,8 +129,8 @@ public class PdmReader {
 		Map<String, ColInfo> headerColumns = Maps.newLinkedHashMap();
 		Map<String, ColInfo> footerColumns = Maps.newLinkedHashMap();
 
-		final String[] head = new String[]{"ID","UPLOAD_ORG_CODE"};
-		final String[] foot = new String[]{"STATE","FLAG","SEND_ORG_CODE","SEND_TIME","RELATION_PK","PERSON_ID","SEND_SYSTEM","CREATETIME","LASTUPTIME","ID_FK"};
+		final String[] head = new String[]{"ID","UPLOAD_ORG_CODE","PERSON_ID","ID_FK","STATE"};
+		final String[] foot = new String[]{"CREATETIME","LASTUPTIME","SEND_ORG_CODE","SEND_SYSTEM","SEND_TIME"};
 		
 		moveColumns(allColumns, headerColumns, head);
 		moveColumns(allColumns, footerColumns, foot);
