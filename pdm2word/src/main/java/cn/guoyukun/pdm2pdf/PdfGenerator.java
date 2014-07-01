@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.com.sinosoft.ie.data.reverse.vo.ColInfo;
 import cn.guoyukun.pdm2pdf.model.Biz;
+import cn.guoyukun.pdm2pdf.model.ColInfo;
 import cn.guoyukun.pdm2pdf.model.Domain;
 import cn.guoyukun.pdm2pdf.model.TableInfo;
 import cn.guoyukun.pdm2pdf.model.TableTree;

@@ -18,10 +18,10 @@ import org.jdom2.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Maps;
-
-import cn.com.sinosoft.ie.data.reverse.vo.ColInfo;
+import cn.guoyukun.pdm2pdf.model.ColInfo;
 import cn.guoyukun.pdm2pdf.model.TableInfo;
+
+import com.google.common.collect.Maps;
 
 public class PdmReader {
 	// 日志对象

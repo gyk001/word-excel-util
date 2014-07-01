@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import cn.com.sinosoft.ie.data.reverse.vo.ColInfo;
-
 public class TableInfo extends Model {
 	private String desc;
 	private static final long serialVersionUID = 6037601412419170041L;
