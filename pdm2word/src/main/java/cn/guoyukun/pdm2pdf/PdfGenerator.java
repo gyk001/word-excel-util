@@ -165,9 +165,10 @@ public class PdfGenerator {
 						Fonts.FONT_TITILE2);
 		// 业务章节
 		Section sBiz = parentSection.addSection(pBiz);
-
-		// 表关系章节
-		buildTableRelationship(sBiz, biz);
+		if(biz.isHasImg()){
+			// 表关系章节
+			buildTableRelationship(sBiz, biz);	
+		}
 		// 表清单章节
 		buildTableListSection(sBiz, biz);
 		// 所有表结构

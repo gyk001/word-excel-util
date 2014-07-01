@@ -4,6 +4,15 @@ import java.util.List;
 
 public class Biz extends Domain {
 	private static final long serialVersionUID = -6102485717868718896L;
+	private boolean hasImg=true;
+	
+	public boolean isHasImg() {
+		return hasImg;
+	}
+
+	public void setHasImg(boolean hasImg) {
+		this.hasImg = hasImg;
+	}
 
 	// 表层次关系
 	private List<TableTree> tableTrees;
