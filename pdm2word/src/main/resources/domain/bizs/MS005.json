@@ -1,0 +1,23 @@
+{
+  "code":"MS005",
+  "name":"会诊登记业务",
+  "tableTrees":[
+      {
+               "code":"T_MS_CONSULTATION",
+               "name":"会诊登记表",
+	       "rel":"主表",
+	       "tableTrees":[
+	            {
+		            "code":"T_MS_CONSULTATION_ACCORG",
+                            "name":"参加会诊机构表",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_CONSULTATION_REC",
+                            "name":"会诊记录表",
+	                    "rel":"子表 （1：n）"
+		    }
+	       ]
+      }
+  ]
+}

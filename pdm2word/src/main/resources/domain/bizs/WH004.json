@@ -1,0 +1,18 @@
+{
+   "code":"WH004",
+   "name":"产后42天健康体检业务",
+   "tableTrees":[
+      {
+                "code":"T_WH_GRVID_POST42",
+		"name":"产后42天健康体检表",
+		"rel":"子表 （1：n）",
+		"tableTrees":[
+		   {
+		             "code":"T_WH_GRVID_POST42_GUID",
+		             "name":"产后42天健康体检-指导表",
+		             "rel":"子表的子表 （1：n）"
+		   }
+		]
+      }
+   ]
+}

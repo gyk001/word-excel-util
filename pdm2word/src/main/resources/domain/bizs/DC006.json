@@ -1,0 +1,23 @@
+{
+    "code": "DC006",
+    "name": "预防接种业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_VACCINCARD",
+	    "name":"预防接种表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_VACCINCARD_BADAFF",
+	                 "name":"预防接种不良反应表",
+	                 "rel":"子表 （1：n）"
+	      },
+	      {
+	                 "code": "T_DC_VACCINCARD_INFO",
+	                 "name":"预防接种信息登记-接种疫苗表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "code": "DC001",
+    "name": "结核病报告卡业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_TUBERCUL",
+	    "name":"结核病报告卡表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_TUBERCUL_REC",
+	                 "name":"结核病报告卡_记录表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

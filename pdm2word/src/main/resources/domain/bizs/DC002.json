@@ -1,0 +1,18 @@
+{
+    "code": "DC002",
+    "name": "艾滋病报告卡业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_AIDS",
+	    "name":"艾滋病报告卡表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_AIDS_REC",
+	                 "name":"艾滋病报告卡_记录表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

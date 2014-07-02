@@ -1,0 +1,18 @@
+{
+    "code": "DC003",
+    "name": "食源性疾病报告卡业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_FOODDISREP",
+	    "name":"食源性疾病报告卡表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_FOODDISREP_SYM",
+	                 "name":"食源性疾病报告卡_症状表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

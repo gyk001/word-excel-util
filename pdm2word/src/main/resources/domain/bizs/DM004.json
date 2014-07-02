@@ -1,0 +1,60 @@
+{
+  "code":"DM004",
+  "name":"精神病患者管理业务",
+  "tableTrees":[
+      {
+              "code":"T_DM_SEVMETILL",
+	      "name":"重性精神疾病患者个人信息表",
+	      "rel":"主表",
+	      "tableTrees":[
+	         {
+		          "code":"T_DM_SEVMETILL_SYM",
+	                  "name":"重性精神疾病患者个人信息表-症状表",
+	                  "rel":"子表 （1：n）"
+		 },
+		 {
+		          "code":"T_DM_SEVMETILL_AFFE",
+	                  "name":"重性精神疾病患者个人信息表-家庭社会影响表",
+	                  "rel":"子表 （1：n）"
+		 },
+		 {
+		          "code":"T_DM_SEVMETILL_FOL_REC",
+	                  "name":"重性精神疾病患者随访记录表",
+	                  "rel":"子表 （1：n）",
+			  "tableTrees":[
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_SOC",
+	                               "name":"重性精神疾病患者随访记录表-社会功能表",
+	                               "rel":"子表的子表 （1：n）"
+			      },
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_FAM",
+	                               "name":"重性精神疾病患者随访记录表-家庭社会影响表",
+	                               "rel":"子表的子表 （1：n）"
+			      },
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_HGUD",
+	                               "name":"重性精神疾病患者随访记录表-康复措施表",
+	                               "rel":"子表的子表 （1：n）"
+			      },
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_SYM",
+	                               "name":"重性精神疾病患者随访记录表-症状表",
+	                               "rel":"子表的子表 （1：n）"
+			      },
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_DRUG",
+	                               "name":"重性精神疾病患者随访记录表-药物表",
+	                               "rel":"子表的子表 （1：n）"
+			      },
+			      {
+			               "code":"T_DM_SEVMETILL_FOL_AEXA",
+	                               "name":"重性精神疾病患者随访记录表-辅助检查记录表",
+	                               "rel":"子表的子表 （1：n）"
+			      }
+			  ]
+		 }
+	      ]
+      }
+  ]
+}

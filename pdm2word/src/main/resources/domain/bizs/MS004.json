@@ -1,0 +1,33 @@
+{
+  "code":"MS004",
+  "name":"转诊登记业务",
+  "tableTrees":[
+      {
+               "code":"T_MS_TRANSFER",
+               "name":"转诊登记表",
+	       "rel":"主表",
+	       "tableTrees":[
+	            {
+		            "code":"T_MS_TRANSFER_OPRE",
+                            "name":"转诊手术记录",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_TRANSFER_TEST",
+                            "name":"转诊检查(检验)记录",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_TRANSFER_DRUG",
+                            "name":"转诊用药记录",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_TRANSFER_DIAG",
+                            "name":"转诊诊断记录",
+	                    "rel":"子表 （1：n）"
+		    }
+	       ]
+      }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+    "code": "CH003",
+    "name": "儿童健康检测业务",
+    "tableTrees": [
+        {
+            "code": "T_CH_CHILDPHYEXA_REC",
+            "name": "儿童健康检测表",
+            "rel":"子表 (1..n)"
+        }
+    ]
+}

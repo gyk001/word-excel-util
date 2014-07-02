@@ -1,0 +1,12 @@
+{
+  "code":"DM001",
+  "name":"乙肝患者管理业务",
+  "hasImg":"false",
+  "tableTrees":[
+      {
+              "code":"T_DM_HEPATITIS",
+	      "name":"乙肝患者管理表",
+	      "rel":"主表"
+      }
+  ]
+}

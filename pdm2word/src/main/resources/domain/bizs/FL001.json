@@ -1,0 +1,75 @@
+{
+    "code": "FL001",
+    "name": "居民健康档案业务",
+    "tableTrees": [
+        {
+            "code": "PERSON_INFO",
+            "name": "居民信息表",
+            "rel": "主表",
+            "tableTrees": [
+                {
+                    "code": "T_FL_RESIDHR",
+                    "name": "居民健康档案表",
+                    "rel": "子表 （1：n）",
+                    "tableTrees": [
+                        {
+                            "code": "T_FL_RESIDHR_FAMHIS",
+                            "name": "居民档案信息-家族史表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISINHS",
+                            "name": "居民档案信息-既往史-住院记录表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISTRM",
+                            "name": "居民档案信息-既往史-外伤记录表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISOP",
+                            "name": "居民档案信息-既往史-手术记录表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISDISAB",
+                            "name": "居民档案信息-既往史-残疾表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISDISE",
+                            "name": "居民档案信息-既往史-疾病表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_HISBLOOD",
+                            "name": "居民档案信息-既往史-输血记录表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_ALLERG",
+                            "name": "居民档案信息-过敏史表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_EXPOSE",
+                            "name": "居民档案信息-暴露史表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_MEDWARN",
+                            "name": "居民档案信息-医学警示表",
+                            "rel": "子表的子表 （1：n）"
+                        },
+                        {
+                            "code": "T_FL_RESIDHR_VACCINE",
+                            "name": "居民档案信息-免疫接种表",
+                            "rel": "子表的子表 （1：n）"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

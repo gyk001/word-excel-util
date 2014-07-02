@@ -1,0 +1,18 @@
+{
+    "code": "DC005",
+    "name": "传染病报告卡业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_INFECTDISREP",
+	    "name":"传染病报告卡表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_INFECTDISREP_EFFC",
+	                 "name":"传染病报告卡_传染病表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

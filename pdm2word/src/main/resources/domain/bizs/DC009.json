@@ -1,0 +1,12 @@
+{
+    "code": "DC009",
+    "name": "血吸虫病病人管理业务",
+    "hasImg":"false",
+    "tableTrees": [
+        {
+            "code":"T_DC_SCHISTOSOM",
+	    "name":"血吸虫病病人管理表",
+	    "rel":"主表"
+        }
+    ]
+}

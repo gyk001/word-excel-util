@@ -1,0 +1,12 @@
+{
+   "code":"WH001",
+   "name":"孕产妇专案业务",
+   "hasImg":"false",
+   "tableTrees":[
+      {
+                "code":"T_WH_GRVID",
+		"name":"孕产妇专案信息表",
+		"rel":"主表"
+      }
+   ]
+}

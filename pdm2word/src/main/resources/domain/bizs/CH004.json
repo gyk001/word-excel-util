@@ -1,0 +1,12 @@
+{
+    "code": "CH004",
+    "name": "出生医学证明业务",
+    "hasImg":"false",
+    "tableTrees": [
+        {
+            "code": "T_CH_BORNCERTIFIC",
+	    "name":"出生医学证明表",
+	    "rel":"主表"
+        }
+    ]
+}

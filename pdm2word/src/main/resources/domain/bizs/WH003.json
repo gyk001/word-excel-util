@@ -1,0 +1,18 @@
+{
+   "code":"WH003",
+   "name":"产后访视业务",
+   "tableTrees":[
+      {
+                "code":"T_WH_GRVID_POST",
+		"name":"产后访视记录表",
+		"rel":"子表 （1：n）",
+		"tableTrees":[
+		   {
+		             "code":"T_WH_GRVID_POST_GUID",
+		             "name":"产后访视记录表_指导表",
+		             "rel":"子表的子表 （1：n）"
+		   }
+		]
+      }
+   ]
+}

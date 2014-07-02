@@ -1,0 +1,144 @@
+{
+  "code":"MS002",
+  "name":"门诊业务",
+  "tableTrees":[
+      {
+               "code":"T_MS_OUTPATEME",
+               "name":"门急诊诊疗临床服务登记表", 
+	       "rel":"主表",
+	       "tableTrees":[
+	           {
+		            "code":"T_MS_OUTPATEME_DETHREC",
+                            "name":"门急诊诊疗死亡记录表", 
+	                    "rel":"子表 （1：1）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_FEEMAIN",
+                            "name":"门急诊诊疗费用结算主记录表", 
+	                    "rel":"子表 （1：1）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_OPREC",
+                            "name":"门急诊诊疗操作/手术记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_CNCONST",
+                            "name":"门急诊诊疗中医辩证分型记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_DRUGREC",
+                            "name":"门急诊诊疗用药记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_MEDREC",
+                            "name":"门急诊病历表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_DIAGNREC",
+                            "name":"门急诊诊疗诊断记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_TRSFBLD",
+                            "name":"门急诊诊疗输血记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_PRECDETA",
+                            "name":"门急诊处方明细表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_EXA",
+                            "name":"门急诊诊疗辅助检查记录表", 
+	                    "rel":"子表 （1：n）" ,
+			    "tableTrees":[
+			         {
+				         "code":"T_MS_OUTPATEME_EXA_SAMP",
+                                         "name":"门急诊诊疗辅助检查标本记录表", 
+	                                 "rel":"子表的子表 （1：n）" 
+				 }
+			    ]
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_PRECMAIN",
+                            "name":"门急诊处方主记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_TRSFREC",
+                            "name":"门急诊诊疗转诊记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_TST",
+                            "name":"门急诊诊疗实验室检验记录表", 
+	                    "rel":"子表 （1：n）" ,
+			    "tableTrees":[
+			        {
+				         "code":"T_MS_OUTPATEME_TST_DETA",
+                                         "name":"门急诊诊疗实验室检验明细记录表", 
+	                                 "rel":"子表的子表 （1：n）"  
+				},
+				{
+				         "code":"T_MS_OUTPATEME_TST_BAC",
+                                         "name":"门急诊诊疗实验室检验细菌结果记录表", 
+	                                 "rel":"子表的子表 （1：n）"  
+				},
+				{
+				         "code":"T_MS_OUTPATEME_TST_SAMP",
+                                         "name":"门急诊诊疗实验室检验标本记录表", 
+	                                 "rel":"子表的子表 （1：n）"  
+				},
+				{
+				         "code":"T_MS_OUTPATEME_TST_APPL",
+                                         "name":"门急诊诊疗实验室检验申请明细记录表", 
+	                                 "rel":"子表的子表 （1：n）"  
+				},
+				{
+				         "code":"T_MS_OUTPATEME_TST_DRUG",
+                                         "name":"门急诊诊疗实验室检验药敏结果记录表", 
+	                                 "rel":"子表的子表 （1：n）"  
+				}
+			    ]
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_SHAD",
+                            "name":"门急诊诊疗影像检查记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_RADREC",
+                            "name":"门急诊诊疗放射治疗记录表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_SYMP",
+                            "name":"门急诊症状表", 
+	                    "rel":"子表 （1：n）" 
+		   },
+		   {
+		            "code":"T_MS_OUTPATEME_FEE",
+                            "name":"门急诊诊疗费用结算表", 
+	                    "rel":"子表 （1：n）" ,
+			    "tableTrees":[
+			        {
+				         "code":"T_MS_OUTPATEME_FEE_DETA",
+                                         "name":"门急诊费用明细表", 
+	                                 "rel":"子表的子表 （1：n）" 
+				},
+				{
+				         "code":"T_MS_OUTPATEME_FEE_PAY",
+                                         "name":"门急诊费用结算支付记录表", 
+	                                 "rel":"子表的子表 （1：n）" 
+				}
+			    ]
+		   }
+	       ]
+      }
+  ]
+}

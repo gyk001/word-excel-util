@@ -1,0 +1,38 @@
+{
+   "code":"WH002",
+   "name":"产前随访服务业务",
+   "tableTrees":[
+      {
+                "code":"T_WH_GRVID_PREFIFOL",
+		"name":"产前随访服务表",
+		"rel":"子表 （1：n）",
+		"tableTrees":[
+		   {
+		             "code":"T_WH_GRVID_PREFIFOL_GUID",
+		             "name":"产前随访服务记录表_保健指导表",
+		             "rel":"子表的子表 （1：n）"
+		   },
+		   {
+		             "code":"T_WH_GRVID_PREFIFOL_CONT",
+		             "name":"产前随访服务记录表_接触有害史表",
+		             "rel":"子表的子表 （1：n）"
+		   },
+		   {
+		             "code":"T_WH_GRVID_PREFIFOL_FAM",
+		             "name":"产前随访服务记录表_家族史表",
+		             "rel":"子表的子表 （1：n）"
+		   },
+		   {
+		             "code":"T_WH_GRVID_PREFIFOL_HIS",
+		             "name":"产前随访服务记录表_既往史表",
+		             "rel":"子表的子表 （1：n）"
+		   },
+		   {
+		             "code":"T_WH_GRVID_PREFIFOL_SEC",
+		             "name":"产前随访服务记录表_阴道分泌物表",
+		             "rel":"子表的子表 （1：n）"
+		   }
+		]
+      }
+   ]
+}

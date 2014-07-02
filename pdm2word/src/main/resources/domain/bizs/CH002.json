@@ -1,10 +1,11 @@
 {
     "code": "CH002",
-    "name": "出生医学证明",
+    "name": "新生儿家庭访视记录业务",
     "tableTrees": [
         {
-            "code": "T_CH_BORNCERTIFIC",
-	    "name":"出生医学证明"
+            "code": "T_CH_NEWBORNFOL",
+            "name": "新生儿家庭访视记录表",
+            "rel":"子表 （1..n）"
         }
     ]
 }

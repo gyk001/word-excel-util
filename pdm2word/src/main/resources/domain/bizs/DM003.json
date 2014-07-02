@@ -1,0 +1,36 @@
+{
+  "code":"DM003",
+  "name":"糖尿病患者管理业务",
+  "tableTrees":[
+      {
+              "code":"T_DM_DIABETFOL",
+	      "name":"糖尿病患者随访基本信息表",
+	      "rel":"主表",
+	      "tableTrees":[
+	           {
+		           "code":"T_DM_DIABETFOL_REC",
+	                   "name":"糖尿病患者随访服务记录表",
+	                   "rel":"子表 （1：n）",
+			   "tableTrees":[
+			       {
+			                 "code":"T_DM_DIABETFOL_REC_SYM",
+	                                 "name":"糖尿病患者随访服务记录-症状表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_DIABETFOL_REC_DRUG",
+	                                 "name":"糖尿病患者随访服务记录-药物表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_DIABETFOL_REC_AEXA",
+	                                 "name":"糖尿病患者随访服务记录-辅助检查表",
+	                                 "rel":"子表的子表 （1：n）"
+			       }
+			   ]
+		   }
+	      ]
+
+      }
+  ]
+}

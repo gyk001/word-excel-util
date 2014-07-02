@@ -287,7 +287,11 @@ public class PdfGenerator {
 	public void addTableTree(Section parentSection, TableTree tableTree)
 			throws DocumentException {
 		String code = tableTree.getCode();
-		String title = tables.get(code).getName() + "表";
+		String title = tables.get(code).getName() ;
+		if(!title.endsWith("表")){
+			title= title+"表";
+		}
+		title= title+"("+code+")";
 		// 表结构标题
 		Paragraph pTitle = new Paragraph(title, Fonts.FONT_TITILE3);
 		// 表结构章节
@@ -542,9 +546,9 @@ public class PdfGenerator {
 	public PdfPTable buildTableList(Section parentSection, Biz biz)
 			throws DocumentException {
 		PdfPTable t = new PdfPTable(3);
-		t.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
+		t.setHorizontalAlignment(PdfPTable.ALIGN_CENTER);
 		// 宽度百分比，相对于父容器
-		t.setWidthPercentage(80);
+		t.setWidthPercentage(98);
 		// 各列宽度百分比
 		t.setWidths(new int[] { 45, 35, 20 });
 		// 上下间隙

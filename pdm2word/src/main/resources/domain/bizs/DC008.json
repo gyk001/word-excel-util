@@ -1,0 +1,12 @@
+{
+    "code": "DC008",
+    "name": "死亡医学证明业务",
+    "hasImg":"false",
+    "tableTrees": [
+        {
+            "code":"T_DC_DEATHREC",
+	    "name":"死亡医学证明表",
+	    "rel":"主表"
+        }
+    ]
+}

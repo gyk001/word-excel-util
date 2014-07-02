@@ -1,0 +1,36 @@
+{
+  "code":"DM005",
+  "name":"老年人业务",
+  "tableTrees":[
+      {
+              "code":"T_DM_OLDERHEAL",
+	      "name":"老年人专案表",
+	      "rel":"主表",
+	      "tableTrees":[
+	           {
+		           "code":"T_DM_OLDERHEAL_FOL",
+	                   "name":"老年人随访表",
+	                   "rel":"子表 （1：n）",
+			   "tableTrees":[
+			       {
+			                 "code":"T_DM_OLDERHEAL_FOL_DRUG",
+	                                 "name":"老年人随访-用药记录表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_OLDERHEAL_FOL_INHS",
+	                                 "name":"老年人随访-入院记录表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_OLDERHEAL_FOL_BED",
+	                                 "name":"老年人随访-家庭病床记录表",
+	                                 "rel":"子表的子表 （1：n）"
+			       }
+			   ]
+		   }
+	      ]
+
+      }
+  ]
+}

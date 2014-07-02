@@ -1,28 +1,12 @@
 {
     "code": "CH001",
-    "name": "儿童",
-    "hasImg":false,
+    "name": "儿童专案业务",
+    "hasImg":"false",
     "tableTrees": [
         {
             "code": "T_CH_CHILD",
-	    "name":"儿童专案",
-            "tableTrees": [
-                {
-                    "code": "T_CH_CHILDPHYEXA_REC",
-                    "name": "儿童健康检测表",
-                    "rel":"1..n"
-                },
-		{
-                    "code": "T_CH_NEWBORNFOL",
-                    "name": "新生儿家庭访视记录",
-                    "rel":"1..n"
-                },
-		{
-                    "code": "T_CH_NEWBORNFOL",
-                    "name": "新生儿家庭访视记录",
-                    "rel":"1..n"
-                }
-            ]
+	        "name":"儿童专案表",
+	        "rel":"主表"
         }
     ]
 }

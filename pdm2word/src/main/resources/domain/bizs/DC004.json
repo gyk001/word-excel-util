@@ -1,0 +1,18 @@
+{
+    "code": "DC004",
+    "name": "职业病报告卡业务",
+    "tableTrees": [
+        {
+            "code": "T_DC_OCCUDIS",
+	    "name":"职业病报告卡表",
+	    "rel":"主表",
+	    "tableTrees":[
+	      {
+	                 "code": "T_DC_OCCUDIS_DIAG",
+	                 "name":"职业病报告卡_尘肺诊断表",
+	                 "rel":"子表 （1：n）"
+	      }
+	    ]
+        }
+    ]
+}

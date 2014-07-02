@@ -1,0 +1,36 @@
+{
+  "code":"DM002",
+  "name":"高血压患者管理业务",
+  "tableTrees":[
+      {
+              "code":"T_DM_HYPETEFOL",
+	      "name":"高血压患者基本信息表",
+	      "rel":"主表",
+	      "tableTrees":[
+	           {
+		           "code":"T_DM_HYPETEFOL_REC",
+	                   "name":"高血压患者随访信息表",
+	                   "rel":"子表 （1：n）",
+			   "tableTrees":[
+			       {
+			                 "code":"T_DM_HYPETEFOL_REC_AEXA",
+	                                 "name":"高血压患者随访服务记录表_辅助检查表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_HYPETEFOL_REC_DRUG",
+	                                 "name":"高血压患者随访服务记录-药物表",
+	                                 "rel":"子表的子表 （1：n）"
+			       },
+			       {
+			                 "code":"T_DM_HYPETEFOL_REC_SYP",
+	                                 "name":"高血压患者随访服务记录-症状表",
+	                                 "rel":"子表的子表 （1：n）"
+			       }
+			   ]
+		   }
+	      ]
+
+      }
+  ]
+}

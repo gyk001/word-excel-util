@@ -1,0 +1,12 @@
+{
+    "code": "DC007",
+    "name": "学校缺勤缺课报告务",
+    "hasImg":"false",
+    "tableTrees": [
+        {
+            "code": "T_DC_ABSENCE",
+	    "name":"学校缺勤缺课报告表",
+	    "rel":"主表"
+        }
+    ]
+}

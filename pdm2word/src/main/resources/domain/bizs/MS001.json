@@ -1,0 +1,149 @@
+{
+  "code":"MS001",
+  "name":"住院业务",
+  "tableTrees":[
+      {
+               "code":"T_MS_PATIE_INHS",
+               "name":"住院诊疗临床服务登记表", 
+	       "rel":"主表",
+	       "tableTrees":[
+	           {
+		            "code":"T_MS_PATIE_INHS_INDIAG",
+                            "name":"住院诊疗入院诊断记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+		   {
+		            "code":"T_MS_PATIE_INHS_CNCONST",
+                            "name":"住院诊疗中医辩证分型记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_ORDEXE",
+                            "name":"住院医嘱执行记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+		   {
+		            "code":"T_MS_PATIE_INHS_TS",
+                            "name":"住院诊疗实验室检验记录表", 
+	                    "rel":"子表 （1：n）",
+			    "tableTrees":[
+			        {
+				          "code":"T_MS_PATIE_INHS_TS_APPL",
+                                          "name":"住院诊疗实验室检验申请明细记录表", 
+	                                  "rel":"子表的子表 （1：n）"
+				},
+				{
+				          "code":"T_MS_PATIE_INHS_TS_SAMP",
+                                          "name":"住院诊疗实验室检验标本记录表", 
+	                                  "rel":"子表的子表 （1：n）"
+				},
+				{
+				          "code":"T_MS_PATIE_INHS_TS_BAC",
+                                          "name":"住院诊疗实验室检验细菌结果记录表", 
+	                                  "rel":"子表的子表 （1：n）"
+				},
+				{
+				          "code":"T_MS_PATIE_INHS_TS_DETA",
+                                          "name":"住院诊疗实验室检验明细记录表", 
+	                                  "rel":"子表的子表 （1：n）"
+				},
+				{
+				          "code":"T_MS_PATIE_INHS_TS_DRUG",
+                                          "name":"住院诊疗实验室检验药敏结果记录表", 
+	                                  "rel":"子表的子表 （1：n）"
+				}
+			    ]
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_DRUG",
+                            "name":"住院诊疗摆药/发药明细记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_OUTDIAG",
+                            "name":"住院诊疗出院诊断记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_RADTREAT",
+                            "name":"住院诊疗放射治疗记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_SM",
+                            "name":"住院诊疗费用结算主记录表", 
+	                    "rel":"子表 （1：1）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_EXA",
+                            "name":"住院诊疗辅助检查记录表", 
+	                    "rel":"子表 （1：n）",
+			    "tableTrees":[
+			        {
+				         "code":"T_MS_PATIE_INHS_EXA_SAM",
+                                         "name":"住院诊疗辅助检查标本记录表", 
+	                                 "rel":"子表的子表 （1：n）" 
+				}
+			    ]
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_SHAD",
+                            "name":"住院诊疗影像检查记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_DEATH",
+                            "name":"住院死亡记录表", 
+	                    "rel":"子表 （1：1）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_TRASBLD",
+                            "name":"住院诊疗输血记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_TRASREC",
+                            "name":"住院诊疗转诊记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_COST",
+                            "name":"住院诊疗费用结算表", 
+	                    "rel":"子表 （1：n）",
+			    "tableTrees":[
+			         {
+				         "code":"T_MS_PATIE_INHS_COSTDETA",
+                                         "name":"住院诊疗费用明细表", 
+	                                 "rel":"子表的子表 （1：n）"
+				 },
+				 {
+				         "code":"T_MS_PATIE_INHS_SM_PW",
+                                         "name":"住院诊疗费用结算支付记录表", 
+	                                 "rel":"子表的子表 （1：n）"
+				 }
+			    ]
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_DIAG",
+                            "name":"住院症状表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_OPER",
+                            "name":"住院诊疗手术记录表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_CLINPA",
+                            "name":"住院诊疗临床路径使用情况表", 
+	                    "rel":"子表 （1：n）"
+		   },
+                   {
+		            "code":"T_MS_PATIE_INHS_DCADV",
+                            "name":"住院医嘱记录表", 
+	                    "rel":"子表 （1：n）"
+		   }
+	       ]
+      }
+  ]
+}

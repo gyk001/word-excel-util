@@ -1,0 +1,98 @@
+{
+  "code":"MS003",
+  "name":"健康体检",
+  "tableTrees":[
+      {
+               "code":"T_MS_PHYEXA",
+               "name":"健康体检记录表",
+	       "rel":"主表",
+	       "tableTrees":[
+	            {
+		            "code":"T_MS_PHYEXA_DENTRUE",
+                            "name":"健康体检表-齿列情况",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_EYES",
+                            "name":"健康体检表-眼部疾病",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_FAMBEDHIS",
+                            "name":"健康体检表-家庭病床史",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_DRINKIND",
+                            "name":"健康体检表-饮酒种类",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_CEREBRVA",
+                            "name":"健康体检表-脑血管疾病",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_IMVACNPLHIS",
+                            "name":"健康体检表-非计划免疫接种",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_VEIN",
+                            "name":"健康体检表-血管疾病",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_BREAST",
+                            "name":"健康体检表-乳腺",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_EATHAB",
+                            "name":"健康体检表-饮食习惯",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_DRUG",
+                            "name":"健康体检表-主要用药情况",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_SYMP",
+                            "name":"健康体检表-症状",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_RISCONT",
+                            "name":"健康体检表-危险因素控制",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_KIDNEY",
+                            "name":"健康体检表-肾脏疾病",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_GUIDE",
+                            "name":"健康体检表-健康指导",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_ASSESS",
+                            "name":"健康体检表-健康评价",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_HEART",
+                            "name":"健康体检表-心脏疾病",
+	                    "rel":"子表 （1：n）"
+		    },
+		    {
+		            "code":"T_MS_PHYEXA_INHOSHIS",
+                            "name":"健康体检表-住院史",
+	                    "rel":"子表 （1：n）"
+		    }
+	       ]
+      }
+  ]
+}
