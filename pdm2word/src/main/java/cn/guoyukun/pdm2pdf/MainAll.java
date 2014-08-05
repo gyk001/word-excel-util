@@ -45,6 +45,9 @@ public class MainAll {
 		for(String domain: new String[]{"MS","FL","DC","CH","WH","DM"}){
 			gen(domain,r, genDate,title);
 		}
+		
+		
+
 
 	}
 

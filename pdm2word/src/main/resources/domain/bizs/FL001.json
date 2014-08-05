@@ -10,7 +10,7 @@
                 {
                     "code": "T_FL_RESIDHR",
                     "name": "居民健康档案表",
-                    "rel": "子表 （1：n）",
+                    "rel": "子表 （1：1）",
                     "tableTrees": [
                         {
                             "code": "T_FL_RESIDHR_FAMHIS",

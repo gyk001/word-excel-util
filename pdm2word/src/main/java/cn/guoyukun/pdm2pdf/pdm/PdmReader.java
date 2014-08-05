@@ -129,8 +129,15 @@ public class PdmReader {
 		Map<String, ColInfo> headerColumns = Maps.newLinkedHashMap();
 		Map<String, ColInfo> footerColumns = Maps.newLinkedHashMap();
 
-		final String[] head = new String[]{"ID","UPLOAD_ORG_CODE","PERSON_ID","ID_FK","STATE"};
-		final String[] foot = new String[]{"CREATETIME","LASTUPTIME","SEND_ORG_CODE","SEND_SYSTEM","SEND_TIME"};
+		//调整pdf文件中字段的顺序
+		//通州版
+//		final String[] head = new String[]{"ID","ID_FK","UPLOAD_ORG_CODE","PERSON_ID","STATE"};
+//		final String[] foot = new String[]{"CREATETIME","LASTUPTIME","SEND_ORG_CODE","SEND_SYSTEM","SEND_TIME"};
+		
+		//标准版
+		final String[] head = new String[]{"ID","UPLOAD_ORG_CODE","SEND_SYSTEM","PERSON_ID","STATE"};
+		final String[] foot = new String[]{"ID_FK","CREATETIME","LASTUPTIME","SEND_ORG_CODE","SEND_TIME"};
+		
 		
 		moveColumns(allColumns, headerColumns, head);
 		moveColumns(allColumns, footerColumns, foot);

@@ -41,7 +41,9 @@ public class PdfGenerator {
 	// 日志对象
 	private static final Logger LOG = LoggerFactory
 			.getLogger(PdfGenerator.class);
+	//Document对象
 	private Document document;
+	//pdf输出流
 	private PdfWriter writer;
 	// 章节索引
 	private int chapterIndex = 1;
@@ -53,34 +55,47 @@ public class PdfGenerator {
 	private String version;
 	// 生成日期
 	private String generateDate;
-	
+	//获得版本号
 	public String getVersion() {
 		return version;
 	}
-
+    
+	//设置版本号
 	public PdfGenerator setVersion(String version) {
 		this.version = version;
 		return this;
 	}
 
+	//获得pdf文档的标题
 	public String getPdfTitle() {
 		return pdfTitle;
 	}
-	
+
+	//设置文档的标题
 	public PdfGenerator setPdfTitle(String pdfTitle) {
 		this.pdfTitle = pdfTitle;
 		return this;
 	}
 	
+	//获得pdf文档的制作日期
 	public String getGenerateDate() {
 		return generateDate;
 	}
 
+	//设置pdf文档的制作日期
 	public PdfGenerator setGenerateDate(String generateDate) {
 		this.generateDate = generateDate;
 		return this;
 	}
 
+	/**
+	 * 设置页眉页脚
+	 * @param writer
+	 * @param left
+	 * @param right
+	 * @throws DocumentException
+	 * @throws IOException
+	 */
 	private void setHeaderFooter(PdfWriter writer, String left, String right)
 			throws DocumentException, IOException {
 		// 第几页/共几页 模式。
@@ -94,6 +109,7 @@ public class PdfGenerator {
 		writer.setPageEvent(headerFooter);
 	}
 
+	//生成新的pdf文档
 	public PdfGenerator newPdf(String pdf)
 			throws DocumentException, MalformedURLException, IOException {
 		// 横版A4
@@ -105,7 +121,8 @@ public class PdfGenerator {
 		// PdfWriter.ALLOW_PRINTING|PdfWriter.ALLOW_SCREENREADERS;
 		// //2，若要实现其他权限如修改等 则需要写进密码，这里是设置密码加密标准或加密类型。
 		// int intEncryptionType = PdfEncryption.AES_128;
-		// //3，要是用这个方法需要引进一个jar包（bcprov-jdk15-137.jar）。第一个参数：打开时需要的密码；第二个参数：实用其他其他权限时使用的密码；第三个参数：可使用的权限；第四个参数：密码类型
+		// //3，要是用这个方法需要引进一个jar包（bcprov-jdk15-137.jar）。第一个参数：
+		//     打开时需要的密码；第二个参数：实用其他其他权限时使用的密码；第三个参数：可使用的权限；第四个参数：密码类型
 		// writer.setEncryption(null, "hello".getBytes(),
 		// intPermissions,intEncryptionType);
 
@@ -116,11 +133,14 @@ public class PdfGenerator {
 		// TOC
 		writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 		// 页眉页脚
+		//通州版
+		//setHeaderFooter(writer, AUTHOR,"通州版  "+ version);
+		//云南标准版
 		setHeaderFooter(writer, AUTHOR, version);
 		// TODO: 设置行间距，没试出效果
 		writer.setInitialLeading(-100f);
 
-		document.addTitle(this.pdfTitle + " " + this.version);
+		document.addTitle(this.pdfTitle + " " +this.version);
 		document.addAuthor(AUTHOR);
 		document.addCreationDate();
 		document.addSubject(this.pdfTitle);
@@ -188,6 +208,7 @@ public class PdfGenerator {
 		return this;
 	}
 
+	//关闭资源
 	public void closePdf() {
 		document.close();
 		writer.close();
@@ -200,24 +221,26 @@ public class PdfGenerator {
 	 */
 	public PdfGenerator addCover() throws DocumentException {
 
+		//封皮上的标题
 		Paragraph title = new Paragraph(this.pdfTitle, Fonts.FONT_COVER_TITLE);
 		title.setAlignment(Paragraph.ALIGN_CENTER);
 		title.setSpacingBefore(100);
 		document.add(title);
 
-		
+		//封皮上的版本
 		Paragraph pVersion = new Paragraph("版本：" + version, Fonts.FONT_TITILE1);
 		pVersion.setAlignment(Paragraph.ALIGN_CENTER);
 		pVersion.setSpacingBefore(90f);
 		pVersion.setSpacingAfter(10f);
 		document.add(pVersion);
 
+		//封皮上的创建日期
 		Paragraph pDate = new Paragraph( generateDate, Fonts.FONT_TITILE1);
 		pDate.setAlignment(Paragraph.ALIGN_CENTER);
 		document.add(pDate);
 		
 		
-		// 封皮
+		// 封皮上的作者 “中科软科技股份有限公司”
 		Anchor anchorTarget = new Anchor(AUTHOR, Fonts.FONT_COVER_SUBTITLE);
 		anchorTarget.setName("BackToTop");
 

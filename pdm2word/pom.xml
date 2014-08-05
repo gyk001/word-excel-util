@@ -5,7 +5,7 @@
 		<groupId>cn.guoyukun</groupId>
 		<artifactId>word-excel-util</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>./pom1.xml</relativePath>
 	</parent>
 	<artifactId>pdm2word</artifactId>
 	<description>根据PDM生成Word</description>
